@@ -27,8 +27,12 @@
                                 <td><input type="text" class="form-control " name="materialCode" value=""></td>
                             </tr>
                             <tr>
+                                <th>耗材人姓名</th>
+                                <td><input type="text" class="form-control " name="userName" value=""></td>
+                            </tr>
+                            <tr>
                                 <th>耗材人ID</th>
-                                <td><input type="number" class="form-control " name="idCode" value=""></td>
+                                <td><input type="text" class="form-control " name="idCode" value=""></td>
                             </tr>
                             <tr>
                                 <th>过期日期</th>
@@ -48,7 +52,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
+                    <button type="submit" onclick="btnSave('#modal-add')" class="btn dark green radius6"><i class="fa fa-save"></i> 保存</button>
+                    <button style="display:none;" type="submit" class="btn dark btn-save radius6"><i class="fa fa-check"></i> 保存
+                    </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
                     </button>
@@ -84,11 +90,15 @@
                             </tr>
                             <tr>
                                 <th>材料编码</th>
-                                <td><input type="text" class="form-control " name="materialCode" value=""></td>
+                                <td><input type="text" class="form-control " readonly name="materialCode" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>耗材人姓名</th>
+                                <td><input type="text" class="form-control " name="userName" value=""></td>
                             </tr>
                             <tr>
                                 <th>耗材人ID</th>
-                                <td><input type="number" class="form-control " name="idCode" value=""></td>
+                                <td><input type="text" class="form-control " name="idCode" value=""></td>
                             </tr>
                             <tr>
                                 <th>过期日期</th>
@@ -108,7 +118,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
+                    <button onclick="btnSave('#modal-edit')" class="btn dark green radius6"><i class="fa fa-check"></i> 保存
+                    </button>
+                    <button style="display:none;" type="submit" class="btn dark btn-save radius6"><i class="fa fa-check"></i> 保存
                     </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
@@ -177,9 +189,10 @@
                 {data: "materialName"},
                 {data: "identCode", visible: false},
                 {data: "typeName"},
-                {data: "materialCode",},
+                {data: "materialCode",visible:false},
                 {data: "materialStatus",replaceFn:'getStatusValue'},
                 {data:'idCode'},
+                {data:'userName'},
                 {data: "gmtCreate",type:'date'},
                 {data: "expiryDate",type:'date'},
             ],
@@ -223,8 +236,18 @@
         date = Shinez.FormateDate(date, "yyyy-MM-dd");
         $("input[name=expiryDate]").val(date);
         $('.form_datetime').datepicker('update');
-        loadTypes()
+        loadTypes();
     });
+
+    function btnSave(args){
+        var sId=$(args).find('input[name=idCode]').val()
+        var reg=/^[1-9][0-9]{14}([0-9]{2}[0-9xX])?$/
+        if(reg.test(sId)){
+            $(args).find('.btn-save').trigger('click')
+        }else{
+            Shinez.tip('error','耗材人身份证ID有错误')
+        }
+    }
 
     function loadTypes(){
         init();
