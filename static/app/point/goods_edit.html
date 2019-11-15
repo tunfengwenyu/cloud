@@ -1,0 +1,174 @@
+<form action="javascript:;" id="form-project" method="post" onsubmit="false">
+    <input type="hidden" name="id"/>
+    <div class="row" style="margin-left: 20px">
+        <div style="width: 1200px">
+            <table class="table table-striped table-bordered " width="100%">
+                <tr>
+                    <th width="100">商品名称</th>
+                    <td><input type="text" class="form-control" name="goodsName" max="16" value=""></td>
+                </tr>
+
+                <tr>
+                    <th>商品列表图</th>
+                    <td>
+                        <div class="pull-left">
+                            <input type="file" class="hidden">
+                            <a href="javascript:;" style="width: 100px;height: 100px;" class="btn-upload">
+                                <span>选择图片</span>
+                                <img name="banner" src="../../images/def.png" width="100" height="100">
+                            </a>
+                            <input type="hidden" name="banner" value=""/>
+                            <p><span class="required-star">* 建议尺寸：220*220px，大小不超过150k</span></p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>商品详情图：</th>
+                    <td colspan="4">
+                        <div class="upload-multiple">
+                            <div class="pull-left">
+                                <button class="img-del" data-index="0">x</button>
+                                <input type="file" class="hidden">
+                                <a href="javascript:;" style="width: 100px;height: 100px;margin:5px;"
+                                   class="btn-upload">
+                                    <span class="img-tip">选择图片</span>
+                                    <img name="imgUrl" src="../../images/def.png" width="100" height="100">
+                                </a>
+                                <input type="hidden"  name="url" value=""/>
+                            </div>
+                        </div>
+                        <input type="hidden" name="detailImgs" value=""/>
+                    </td>
+                </tr>
+
+                <tr width="100">
+                    <th>所需积分</th>
+                    <td>
+                        <input type="number" class="form-control input-medium" name="showPoints" min="0"
+                               step="1" oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"/>
+                    </td>
+                </tr>
+                <tr width="100">
+                    <th>库存</th>
+                    <td>
+                        <input type="number" class="form-control input-medium" name="totalStock" min="0"
+                               step="1" oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>商品详情：</th>
+                    <td colspan="3">
+                        <div id="editor-trigger" style="height: 450px;">
+                            <p>请输入内容...</p>
+                        </div>
+                        <input type="hidden" name="descriptions"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="modal-footer">
+                <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
+                <button type="button" class="btn dark btn-outline radius6" onclick="goback()"><i
+                        class="fa fa-close"></i> 关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="js/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var editor;
+    $(function () {
+        registerImageUploadComponent();
+        var id = history.state.params;
+        $("input[name='id']").val(id);
+        Shinez.get("/main/qiniu-token", function (ret) {
+            var token = ret.data.uploadToken;
+            var domain = ret.data.domain;
+            initEditor(token, domain);
+            init(id);
+        });
+    });
+
+    function initEditor(token, domain) {
+        editor = new wangEditor('editor-trigger');
+        editor.config.customUpload = true;  // 设置自定义上传的开关
+        editor.config.customUploadInit = function () {
+            QiniuInit.init(editor, token, domain);
+        };
+        // 取消粘贴过滤
+        editor.config.pasteFilter = false;
+        // 关闭js过滤
+        editor.config.jsFilter = false;
+        editor.config.menus = $.map(wangEditor.config.menus, function (item, key) {
+            if (item === 'fullscreen') {
+                return null;
+            }
+            return item;
+        });
+        editor.create();
+    }
+
+
+    function init(id) {
+        Shinez.get("/goods/all",{"id":id}, function (ret) {
+            $.each(ret[0], function (k, v) {
+                if (k === "detailImgs") {
+                    return true;
+                }
+                $("*[name=" + k + "]").val(v).attr("src",v);
+            });
+
+            var div = $(".upload-multiple").eq(0).find(".pull-left").last();
+            $(".upload-multiple").eq(0).html("");
+            $(".upload-multiple").eq(0).html(div);
+            var imgs = ret[0].detailImgs.split(",");
+
+            $.each(imgs, function (m) {
+                var v = imgs[m];
+                if (v === "") return true;
+                //复制新图片选择项
+                var $newObject = $(".upload-multiple").eq(0).find(".pull-left").first().clone(true);
+                $newObject.find("img").attr("src", v);
+                $newObject.find("input[type=hidden]").val(v);
+                var i = $newObject.find(".img-del").attr("data-index");
+                $newObject.find(".img-del").attr("data-index", parseInt(i) + 1);
+                $(".upload-multiple").eq(0).before($newObject);
+            });
+            $("input[name='detailImgs']").val(ret[0].detailImgs);
+
+            registerImageUploadComponent();
+
+            editor.$txt.html(ret[0].descriptions);
+        });
+    }
+
+
+    $(".btn-save").click(function () {
+        var html = editor.$txt.html();
+        $("input[name='descriptions']").val(html);
+
+        var urls="";
+        $("input[name='url']").each(function (i) {
+            urls=urls+$(this).val()+",";
+        });
+        $("input[name='detailImgs']").val(urls);
+
+        Shinez.post("/goods",$("#form-project").serialize(),function (ret) {
+            if(ret.code===0){
+                loadHtml("/point/goods");
+            }else{
+                Shinez.tip("error",ret.msg);
+            }
+        });
+    });
+
+    function goback(){
+        loadHtml("/point/goods");
+    }
+
+
+
+
+</script>

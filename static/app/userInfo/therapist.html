@@ -1,0 +1,114 @@
+
+<div class="row">
+    <div class="top-handle-btn">
+        <form id="search-form" action="javascript:;">
+            <button class="btn-sm btn radius6 search">
+                <i class="fa fa-refresh"></i>
+            </button>
+            <select name="pageSize" class="form-control page-size  input-small inline">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+            <input type="text" placeholder="员工名称查询" class="form-control input-inline" name="therapistName"/>
+            <button class="btn purple right search radius6"><i class="fa fa-search"></i> 查询</button>
+            <a class='btn green radius6' data-toggle='modal' style="display: none" data-roles="ROLE_SUPER" onclick="addTherapist()"><i class="fa fa-plus"></i> 添加</a>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <table id="data-table" class="table table-striped table-bordered table-hover" width="100%">
+        <thead>
+        <tr>
+            <th>员工号</th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <!--<th>年龄</th>-->
+            <th>性别</th>
+	    <th>类别</th>
+            <th>身份证号</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var url = "/therapist";
+    function init() {
+        DataTable.init({
+            url: url,//ajax请求url
+            tableName: "data-table",//数据表table id
+            paramsFormName: "search-form",//查询参数form id
+            modal: "modals",//模态框div
+            authValid: true,
+            columns: [//列对应的字段数组，注意顺序
+                {data: "id",visible:false},
+                {data: "staffNo"},
+                {data: "therapistName"},
+                {data: "therapistMobile"},
+                // {data: "therapistAge"},
+                {data: "therapistSex",replaceFn: "getSex"},
+                {data: "therapistType",replaceFn: "getType"},
+                {data: "therapistIdCode"}
+            ],
+            options: [//操作区域(id)
+                {
+                    icon: 'fa fa-edit',
+                    name: "编辑",
+                    color: "green",
+                    // option: "modal-edit",
+                    edit: true,
+                    url: url,
+                    editMain: true,
+                    pre: "editTherapist",
+                    props: ["data-roles=ROLE_SUPER"]
+                },
+                {
+                    icon: 'fa fa-remove',
+                    name: "删除",
+                    color: "red",
+                    del: url,
+                    msg: "确定要删除该治疗师吗？",
+                    props: ["data-roles=ROLE_SUPER"]
+                },
+            ]
+        });
+    };
+
+    function getSex(therapistSex){
+        if(!therapistSex || therapistSex=="false"){
+            return "男";
+        }
+        if(therapistSex || therapistSex=="true"){
+            return "女";
+        }
+    }
+
+    function getType(therapistType){
+        if(therapistType == 2){
+            return "治疗师";
+        }
+        if(therapistType == 3){
+            return "医生";
+        }
+    }
+
+    function addTherapist(){
+        loadHtml("/userInfo/therapist_add");
+    }
+
+    $(function () {
+        init();
+    });
+
+    function editTherapist(id) {
+        history.state.params=id;
+        loadHtml("/userInfo/therapist_edit");
+    }
+
+</script>

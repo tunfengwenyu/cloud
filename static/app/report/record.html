@@ -1,0 +1,189 @@
+<!--搜索功能-->
+<div class="row">
+    <div class="top-handle-btn">
+        <form id="search-form" action="javascript:;">
+            每页显示：<input name="pageSize" class="form-control page-size input-small inline"
+                        type="number" min="2" max="50" style="width: 80px;"
+                        value="10" />
+            <input type="text " class="form-control input-small inline" name="reportNo"
+                   placeholder="输入患者姓名" />
+            <!--<select name="roleId" class="form-control input-small inline">
+                <option value="">选择角色</option>
+            </select>-->
+            <button class="btn purple right search radius6"><i class="fa fa-search"></i> 查询</button>
+            <a class='btn green radius6' data-toggle='modal' href='#modal-add'><i class="fa fa-plus"></i> 添加</a>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="record-table pull-left">
+        <table id="data-table" class="table table-striped table-bordered table-hover record-basic"
+               width="100%">
+            <thead>
+            <tr>
+                <th>病历号</th>
+                <th>姓名</th>
+                <!--<th>性别</th>
+                <th>年龄</th>
+                <th>身高/cm</th>
+                <th>体重/kg</th>-->
+                <th>就诊日期</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+    <div class="check-result pull-right">
+        <table id="record-current-result"
+               class="table table-striped table-bordered table-hover record-report"
+               width="100%">
+            <thead>
+            <tr>
+                <th>项目编号</th>
+                <th>检查项目</th>
+                <th>检查方式</th>
+                <th>检查日期</th>
+                <!--<th>检查时间</th>-->
+                <!--<th>记录时长</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    var aColumn=[
+        {data:"reportNo"},
+        {data:"userName"},
+        {data:"checkDate",type:"date"}
+    ];
+
+    function init(){
+        var urls="/report/data/";
+        DataTable.init({
+            url:urls,
+            tableName: "data-table", //数据表table id
+            paramsFormName: "search-form", //查询参数form id
+            columns:aColumn,
+            modal: "modals",//模态框div
+        })
+    }
+
+    //报告集的table表头的信息名称
+    /*var aColumnReport=[
+        {data:""}
+    ]*/
+    //获取当前用户的报告集
+    function getReportList(reportNo,callback){
+        var reportNo=reportNo || '';
+        var urls='/report/'+reportNo;
+        //定义一个空数组用来存储报告内容中遍历出来的programDataId
+        var aProgramDataId=[];
+        Shinez.get(urls,function(ret){
+            //判断data是否为空对象
+            var arr=Object.keys(ret.data);
+            //console.log('ret',ret)
+            if(arr.length>0){
+                //根据programId号获取具体的检查报告类型信息
+                $.each(ret.data,function(k,v){
+                    arr.forEach(function(item,index){
+                        if(k==item && v.length==0){
+                            $('#record-current-result tbody').empty().append('<tr><td class="text-center" colspan="'+$('#record-current-result thead th').length+'">'+k+'的数据为空</td></tr>')
+                        }else if(k==item && v.length>0){
+                            v.forEach(function(item,index){
+                                aProgramDataId.push(item.programDataId);
+                                callback(aProgramDataId)
+                            })
+                        }
+                    })
+
+                })
+            }else{
+                $('#record-current-result tbody').empty().append('<tr><td class="text-center" colspan="'+$('#record-current-result thead th').length+'">当前患者没有可查询的报告数据</td></tr>')
+
+            }
+        })
+    };
+
+    //将programType名称转成中文
+    function turnName(args){
+        switch(args){
+            case 1:
+                return "盆底肌表面肌电";
+            case 2:
+                return "表面肌电评估频率疲劳度";
+            case 3:
+                return "表面肌电评估标准";
+            case 4:
+                return "表面肌电评估趋势";
+            case 5:
+                return "多媒体训练分析";
+            case 6:
+                return "多媒体训练趋势";
+        }
+    }
+    //时间格式的转换
+    function turnDateTime(args){
+        var d=new Date(args);
+        return d.getFullYear()+'-'+ (d.getMonth()+1)+'-'+ d.getDate();
+    }
+
+    $(function(){
+        init();
+
+        //单击用户信息列表
+        $('.record-basic tbody').delegate('tr','click',function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            var sReportNo=$(this).find('td[data-name=reportNo]').text();
+            getReportList(sReportNo,function(args){
+                var urls='/report/programData'
+                args.forEach(function(item,index){
+                    //根据programDataId请求包括类型的数据
+                    urls=urls+'?id='+item;
+                    Shinez.get(urls,function(ret){
+                        if(ret.code==0){
+                            $.each(ret.data,function(k,v){
+                                var sTr=`
+                                <tr data-id="${v.id}">
+                                    <td data-name="reportNo">${v.reportNo}</td>
+                                    <td data-name="programType">${turnName(v.programType)}</td>
+                                    <td data-name="checkMethod">${v.checkMethod}</td>
+                                    <td data-name="gmtCreate">${turnDateTime(v.gmtCreate)}</td>
+                                </tr>`;
+
+                                $('#record-current-result tbody').empty().append(sTr)
+                            })
+
+                        }
+
+                    })
+                })
+            })
+        });
+
+        //双击用户的报告信息，可以跳转到报告页面
+        $('.record-report tbody').delegate('tr','dblclick',function(){
+            if($(this).attr('data-id')){
+                var sProgramDataId=$(this).attr('data-id');
+                var sReportTitle=$(this).find('td[data-name=programType]').text();
+                var loadHtmlName='/report/report_content';
+                var sReportNo=$(this).find('td[data-name=reportNo]').text();
+                var state={};
+                state["html"]=loadHtmlName;
+                state["params"]=sReportNo+'&'+sProgramDataId+'&'+sReportTitle;
+                /*var url = loadHtmlName + (sReportNo == null || sReportNo == "" ? "" : "?" + sReportNo);*/
+                console.log('sdafad',state.params)
+                history.pushState(state, null, null);
+                loadHtml(loadHtmlName);
+            }
+        })
+    });
+</script>

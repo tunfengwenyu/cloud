@@ -1,0 +1,233 @@
+<form action="javascript:;" id="form-project" method="post" onsubmit="false">
+    <input type="hidden" name="id"/>
+    <div class="row" style="margin-left: 40px">
+        <div style="width: 1200px">
+            <table class="table table-striped table-bordered " width="100%">
+                <tr>
+                    <th width="120">员工号(限8位)</th>
+                    <td><input type="text" class="form-control" name="staffNo" max="16" value=""></td>
+                </tr>
+                <tr>
+                    <th width="120">姓名</th>
+                    <td><input type="text" class="form-control" name="therapistName" max="16" value=""></td>
+                </tr>
+                <tr>
+                    <th width="120">手机号</th>
+                    <td><input type="text" class="form-control" name="therapistMobile" max="16" value=""></td>
+                </tr>
+
+                <tr>
+                    <th width="120">性别</th>
+                    <td>
+                        <label class="mt-radio"><input type="radio" name="therapistSex"
+                                                       value="0"/><span></span>男</label>
+                        <label class="mt-radio"><input type="radio" name="therapistSex"
+                                                       value="1"/><span></span>女</label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="120">类别</th>
+                    <td>
+                        <label class="mt-radio"><input type="radio" name="therapistType" value="2"/><span></span>治疗师</label>
+                        <label class="mt-radio"><input type="radio" name="therapistType" value="3"/><span></span>医生</label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="120">身份证号</th>
+                    <td><input type="text" class="form-control" name="therapistIdCode" max="18" value=""></td>
+                </tr>
+
+                <tr>
+                    <th>本人证件照：</th>
+                    <td colspan="4">
+                        <div class="upload-multiple">
+                            <div class="pull-left">
+                                <button class="img-del" data-index="0">x</button>
+                                <input type="file" class="hidden">
+                                <a href="javascript:;" style="width: 100px;height: 100px;margin:5px;"
+                                   class="btn-upload">
+                                    <span class="img-tip">选择图片</span>
+                                    <img name="passportPhoto" src="../../images/def.png" width="100" height="100">
+                                </a>
+                                <input type="hidden" name="url" value=""/>
+                            </div>
+                        </div>
+                        <input type="hidden" name="passportPhoto" value=""/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>从业资格证：</th>
+                    <td colspan="4">
+                        <div class="upload-multiple">
+                            <div class="pull-left">
+                                <button class="img-del" data-index="0">x</button>
+                                <input type="file" class="hidden">
+                                <a href="javascript:;" style="width: 100px;height: 100px;margin:5px;"
+                                   class="btn-upload">
+                                    <span class="img-tip">选择图片</span>
+                                    <img name="qualificationCertificate" src="../../images/def.png" width="100"
+                                         height="100">
+                                </a>
+                                <input type="hidden" name="imgUrl" value=""/>
+                            </div>
+                        </div>
+                        <input type="hidden" name="qualificationCertificate" value=""/>
+                    </td>
+                </tr>
+
+                <tr width="120">
+                    <th>简介</th>
+                    <td>
+                        <textarea class="form-control" placeholder="忌症" name="introduction"/>
+                    </td>
+                </tr>
+                <tr width="120">
+                    <th>绑定站点</th>
+                    <td class="addStations">
+
+                    </td>
+                </tr>
+            </table>
+            <div class="modal-footer">
+                <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
+                <button type="button" class="btn dark btn-outline radius6" onclick="goback()"><i
+                        class="fa fa-close"></i> 关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        registerImageUploadComponent();
+        loadStations();
+        var id = history.state.params;
+        $("input[name='id']").val(id);
+        init(id);
+
+    });
+
+    $(".btn-save").click(function () {
+
+        var urls="";
+        $("input[name='url']").each(function (i) {
+            urls=urls+$(this).val()+",";
+        });
+        $("input[name='passportPhoto']").val(urls);
+
+        var imgurls="";
+        $("input[name='imgUrl']").each(function (i) {
+            imgurls=imgurls+$(this).val()+",";
+        });
+        $("input[name='qualificationCertificate']").val(imgurls);
+
+
+        Shinez.post("/therapist",$("#form-project").serialize(),function (ret) {
+            if(ret.code===0){
+                loadHtml("/userInfo/therapist");
+            }else{
+                Shinez.tip("error",ret.msg);
+            }
+        });
+    });
+
+
+    function init(id) {
+        Shinez.get("/therapist/" + id, function (ret) {
+            $.each(ret, function (k, v) {
+                if (k === "passportPhoto") {
+                    return true;
+                }
+                if (k === "qualificationCertificate") {
+                    return true;
+                }
+                if (k === "therapistStations") {
+                    return true;
+                }
+
+                if (k === "therapistSex") {
+                    if (v) {
+                        $("input[name='" + k + "'][value='" + 1 + "']").prop("checked", true);
+                    } else {
+                        $("input[name='" + k + "'][value='" + 0 + "']").prop("checked", true);
+                    }
+                    return true;
+                }
+
+                if (k === "therapistType") {
+                    if (v === 2) {
+                        $("input[name='" + k + "'][value='" + 2 + "']").prop("checked", true);
+                    } else if (v===3) {
+                        $("input[name='" + k + "'][value='" + 3 + "']").prop("checked", true);
+                    }
+                    return true;
+                }
+                $("*[name=" + k + "]").val(v);
+            });
+
+
+            $.each(ret.therapistStations, function (k, v) {
+                $(".addStations").find("input[value='" + v.stationNo + "']").prop("checked", true);
+            });
+
+            var div = $(".upload-multiple").eq(0).find(".pull-left").last();
+            $(".upload-multiple").eq(0).html("");
+            $(".upload-multiple").eq(0).html(div);
+            var imgs = ret.passportPhoto.split(",");
+
+            $.each(imgs, function (m) {
+                var v = imgs[m];
+                if (v === "") return true;
+                //复制新图片选择项
+                var $newObject = $(".upload-multiple").eq(0).find(".pull-left").first().clone(true);
+                $newObject.find("img").attr("src", v);
+                $newObject.find("input[type=hidden]").val(v);
+                var i = $newObject.find(".img-del").attr("data-index");
+                $newObject.find(".img-del").attr("data-index", parseInt(i) + 1);
+                $(".upload-multiple").eq(0).before($newObject);
+            });
+            $("input[name='passportPhoto']").val(ret.passportPhoto);
+
+
+            var div = $(".upload-multiple").eq(1).find(".pull-left").last();
+            $(".upload-multiple").eq(1).html("");
+            $(".upload-multiple").eq(1).html(div);
+            var cateimgs = ret.qualificationCertificate.split(",");
+
+            $.each(cateimgs, function (m) {
+                var v = cateimgs[m];
+                if (v === "") return true;
+                //复制新图片选择项
+                var $newObject = $(".upload-multiple").eq(1).find(".pull-left").first().clone(true);
+                $newObject.find("img").attr("src", v);
+                $newObject.find("input[type=hidden]").val(v);
+                var i = $newObject.find(".img-del").attr("data-index");
+                $newObject.find(".img-del").attr("data-index", parseInt(i) + 1);
+                $(".upload-multiple").eq(1).before($newObject);
+            });
+            $("input[name='qualificationCertificate']").val(ret.qualificationCertificate);
+
+            registerImageUploadComponent();
+        });
+    }
+
+
+    function loadStations() {
+        Shinez.get("/basic/allStation", function (ret) {
+            $.each(ret, function (k, v) {
+                $(".addStations").append("<label class='mt-checkbox'><input type='checkbox' class='no-init' name='therapistStations[" + k + "].stationNo' value='" + v.stationNo + "'>" + v.stationName + "<span><span></span></span></label>&nbsp;&nbsp;&nbsp;");
+            });
+        })
+    }
+
+
+    function goback() {
+        loadHtml("/userInfo/therapist");
+    }
+
+
+</script>

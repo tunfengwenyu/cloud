@@ -1,0 +1,613 @@
+<div id="modals">
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">治疗类型</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-bordered " width="100%">
+                        <thead>
+                        <tr>
+                            <th style="vertical-align:middle;">患者姓名:</th>
+                            <td><input type="text" class="form-control" name="userName" max="16"
+                                       value=""
+                                       readonly></td>
+                        </tr>
+                        </thead>
+                        <tbody class="device-name">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
+                            class="fa fa-close"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+<div class="row">
+    <div class="top-handle-btn">
+        <form id="search-form" action="javascript:;">
+            <button class="btn-sm btn radius6 search">
+                <i class="fa fa-refresh"></i>
+            </button>
+            <select name="pageSize" class="form-control page-size  input-small inline">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+
+            <div style="display: inline-block;position: relative;top: 11px;">
+                <div class="input-group date  form_datetime " style="float: left">
+                    <span style="margin:8px">核销日期</span>
+                    <input type="text" size="16" style="height: 35px" name="startTime" readonly
+                           class="form-control input-small inline"/>
+                    <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                </div>
+                <div class="input-group date  form_datetime " style="float: left">
+                    <input type="text" size="16" style="height: 35px" name="endTime" readonly
+                           class="form-control input-small inline"/>
+                    <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                </div>
+            </div>
+            <select name="serviceNo" class=" input-medium form-control inline select2-multiple">
+                <option value="">-- 选择服务 --</option>
+            </select>
+            <select name="stationNo" class=" input-medium form-control inline select2-multiple">
+                <option value="">-- 选择站点 --</option>
+            </select>
+            <br><br>
+            <!--<input type="text" name="orderNo" class="form-control input-medium inline"-->
+                   <!--placeholder="订单号"/>-->
+            <input type="text" name="userName" class="form-control input-medium inline"
+                   placeholder="姓名"/>
+            <input type="text" name="mobile" class="form-control input-medium inline"
+                   placeholder="手机号"/>
+            <button type="button" class='btn grey output-btn radius6' onclick="exportData()"><i
+                    class="fa fa-download"></i> 导出
+            </button>
+        </form>
+    </div>
+</div>
+<div class="row" style="padding: 5px">
+    <table id="data-table" class="table table-striped table-bordered table-hover" width="100%">
+        <thead>
+        <tr style="background-color: #EEE">
+            <th>服务名称</th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <th>用户所属站点</th>
+            <th>指定治疗师</th>
+            <th>核销次数</th>
+            <th>核销时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script type="text/html" id="CH">
+    <tr>
+        <th>通道:</th>
+        <td><input type="text" readonly class="form-control" value="{{channel}}"/></td>
+    </tr>
+    <tr>
+        <th>模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>处方:</th>
+        <td><input type="text" readonly class="form-control" value="{{cure_prescription}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{last}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="CSB">
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗档位:</th>
+        <td><input type="text" readonly class="form-control" value="{{gear}}"/></td>
+    </tr>
+    <tr>
+        <th>有效声强:</th>
+        <td><input type="text" readonly class="form-control" value="{{effectiveSoundIntensity}}"/></td>
+    </tr>
+    <tr>
+        <th>工作模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="DDCS">
+    <tr>
+        <th>治疗处方:</th>
+        <td><input type="text" readonly class="form-control" value="{{cure_prescription}}"/></td>
+    </tr>
+    <tr>
+        <th>声处方:</th>
+        <td><input type="text" readonly class="form-control" value="{{sound_prescription}}"/></td>
+    </tr>
+    <tr>
+        <th>声模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{effectiveSoundIntensity}}"/></td>
+    </tr>
+    <tr>
+        <th>声功率:</th>
+        <td><input type="text" readonly class="form-control" value="{{power}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="DMS">
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="GCS">
+    <tr>
+        <th>模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>热疗:</th>
+        <td><input type="text" readonly class="form-control" value="{{thermotherapy}}"/></td>
+    </tr>
+    <tr>
+        <th>强度:</th>
+        <td><input type="text" readonly class="form-control" value="{{strength}}"/></td>
+    </tr>
+    <tr>
+        <th>差频:</th>
+        <td><input type="text" readonly class="form-control" value="{{beatFrequency}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="GDW">
+    <tr>
+        <th>工作模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>电位:</th>
+        <td><input type="text" readonly class="form-control" value="{{potential}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="HMB">
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+
+</script>
+<script type="text/html" id="JPSJ">
+    <tr>
+        <th>模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>通道:</th>
+        <td><input type="text" readonly class="form-control" value="{{channel}}"/></td>
+    </tr>
+    <tr>
+        <th>频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>脉宽:</th>
+        <td><input type="text" readonly class="form-control" value="{{pulseWidth}}"/></td>
+    </tr>
+    <tr>
+        <th>突发频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="NDFS">
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>处方选择:</th>
+        <td><input type="text" readonly class="form-control" value="{{cure_prescription}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="PGCJ">
+    <tr>
+        <th>治疗模式,:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>强度:</th>
+        <td><input type="text" readonly class="form-control" value="{{strength}}"/></td>
+    </tr>
+    <tr>
+        <th>持续:</th>
+        <td><input type="text" readonly class="form-control" value="{{last}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="PTJ">
+    <tr>
+        <th>模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="PZG">
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>模式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>功率:</th>
+        <td><input type="text" readonly class="form-control" value="{{power}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="SMY">
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+
+</script>
+<script type="text/html" id="SWFK">
+    <tr>
+        <th>通道:</th>
+        <td><input type="text" readonly class="form-control" value="{{channel}}"/></td>
+    </tr>
+    <tr>
+        <th>频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>脉宽:</th>
+        <td><input type="text" readonly class="form-control" value="{{pulseWidth}}"/></td>
+    </tr>
+    <tr>
+        <th>波形:</th>
+        <td><input type="text" readonly class="form-control" value="{{waveForm}}"/></td>
+    </tr>
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="TY">
+    <tr>
+        <th>工作方式:</th>
+        <td><input type="text" readonly class="form-control" value="{{model}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>频率:</th>
+        <td><input type="text" readonly class="form-control" value="{{frequency}}"/></td>
+    </tr>
+    <tr>
+        <th>脉宽:</th>
+        <td><input type="text" readonly class="form-control" value="{{pulseWidth}}"/></td>
+    </tr>
+    <tr>
+        <th>波宽:</th>
+        <td><input type="text" readonly class="form-control" value="{{waveWidth}}"/></td>
+    </tr>
+    <tr>
+        <th>间隔:</th>
+        <td><input type="text" readonly class="form-control" value="{{interval}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="WB">
+    <tr>
+        <th>治疗时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+    <tr>
+        <th>功率:</th>
+        <td><input type="text" readonly class="form-control" value="{{power}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="ZYXZ">
+    <tr>
+        <th>功率:</th>
+        <td><input type="text" readonly class="form-control" value="{{power}}"/></td>
+    </tr>
+    <tr>
+        <th>温度:</th>
+        <td><input type="text" readonly class="form-control" value="{{temperature}}"/></td>
+    </tr>
+    <tr>
+        <th>时间:</th>
+        <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
+    </tr>
+</script>
+<script type="text/html" id="dismatched">
+    <tr>
+        <th>错误提示:</th>
+        <td>{{error}}</td>
+    </tr>
+</script>
+
+<script type="text/javascript">
+
+    var servicePage = {
+        order: "/order/verification",
+        exportKey: "/export/export-key",
+        exportUrl: "/admin/export/verification/file?key=",
+        service: "/service/all",
+        station: "/basic/allStation"
+    }
+
+    var url = servicePage.order;
+    $(function () {
+
+        $(".form_datetime").datepicker({
+            format: "yyyy-mm-dd",
+            language: 'zh-CN',
+            autoclose: 1,
+        });
+
+        var date = new Date();
+        date = Shinez.FormateDate(date, "yyyy-MM-dd");
+        $("input[name=startTime]").val(date);
+        $("input[name=endTime]").val(date);
+        $('.form_datetime').datepicker('update');
+        loadService();
+        loadStation();
+        loadOrders();
+    });
+
+
+    function exportData() {
+        Shinez.xhr("GET", servicePage.exportKey, {}, true, function (key) {
+            if (typeof(key) === "string" && key !== undefined && key !== "") {
+                window.open(servicePage.exportUrl+key + "&" + $("#search-form").serialize());
+            } else {
+                Shinez.tip("error", "导出失败！" + key.msg);
+            }
+        });
+    }
+
+    function loadService() {
+        Shinez.get(servicePage.service, function (ret) {
+            $(".opt-service").remove();
+            $.each(ret, function (k, v) {
+                $("select[name=serviceNo]").append("<option  class='opt-service' value='" + v.serviceNo + "'>" + v.serviceName + "</option>")
+            });
+        })
+    }
+
+    function loadStation() {
+        Shinez.get(servicePage.station, function (ret) {
+            $(".opt-station").remove();
+            $.each(ret, function (k, v) {
+                $("select[name=stationNo]").append("<option class='opt-station' value='" + v.stationNo + "'>" + v.stationName + "</option>")
+            });
+
+        })
+    }
+
+
+    function loadOrders() {
+        var query = history.state.query;
+        if (query) {
+            $.each(query, function (k, v) {
+                $("#search-form").find("*[name=" + k + "]").val(v);
+            })
+        }
+        DataTable.init({
+            url: url,
+            tableName: "data-table",
+            paramsFormName: "search-form",
+            modal: "modals",
+            columns: [
+                // {
+                //     data: "orderNo", replace: function (val) {
+                //         return "<a href='javascript:'>" + val + "</a>";
+                //     },
+                //
+                // },
+                {
+                    data: "serviceName",
+                },
+                // {data:"serviceTypeName"},
+                {data: "userName"},
+                {data: "mobile"},
+                {data: "stationName"},
+                {data: "therapistName"},
+                {data: "verificationNum"},
+                // {
+                //     data: "isProxy", replace: function (val) {
+                //         if (val === true || val === 1 || val === "true" || val === "1") {
+                //             return "√";
+                //         }
+                //         return "x";
+                //     }
+                // },
+                // {
+                //     data: "proxyTherapistName",
+                // },
+                {
+                    data: "verificationAt", type: "datetime"
+                },
+
+            ],
+            options:[
+                {
+                    //icon: 'fa fa-info-circle',
+                    name: "check",
+                    color: "blue",
+                    option: "modal-edit",
+                    edit: true,
+                    pre:'getCureData',
+                    span:'<span style="color:#fff;">治疗参数</span>'
+                    //url: url,
+                    //editMain: true,
+                    //props: ["data-roles=ROLE_SUPER"]
+                }
+            ],
+            endFn:'loadTotalData'
+        });
+    }
+
+    var aList=[]
+    function loadTotalData(args){
+        aList=args.page.list;
+    }
+
+    function getCureData(args){
+        var iCurId=args;
+        var oCurItem=aList.filter(function(item,index){
+            return item.id==iCurId
+        });
+        var identCode=oCurItem[0].identCode
+        Shinez.get('/order/cureParam?id='+iCurId,function(ret){
+            if(ret.code!=0){
+                var errorMsg={error:'当前患者没有治疗数据'}
+                var sHtml=template('dismatched',errorMsg)
+                $('.device-name').empty().append(sHtml)
+            }else{
+                var cureParam=ret.data.cureParam
+                getTemplateInfo(identCode,cureParam)
+            }
+        })
+    }
+
+    function getTemplateInfo(sName,objs){
+        if(sName){
+            if(sName.includes('CH')){
+                var sHtml=template('CH',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('CSB')){
+                var sHtml=template('CSB',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('DCCS')){
+                var sHtml=template('DCCS',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('DMS')){
+                var sHtml=template('DMS',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('GCS')){
+                var sHtml=template('GCS',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('GDW')){
+                var sHtml=template('GDW',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('HMB')){
+                var sHtml=template('HMB',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('JPSJ')){
+                var sHtml=template('JPSJ',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('NDFS')){
+                var sHtml=template('NDFS',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('PGCJ')){
+                var sHtml=template('PGCJ',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('PTJ')){
+                var sHtml=template('PTJ',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('PZG')){
+                var sHtml=template('PZG',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('SMY')){
+                var sHtml=template('SMY',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('SWFK')){
+                var sHtml=template('SWFK',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('TY')){
+                var sHtml=template('TY',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('WB')){
+                var sHtml=template('WB',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('ZYXZ')){
+                var sHtml=template('ZYXZ',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+        }else{
+            var sMessage={error:'当前患者没有选择治疗设备类型，无法显示治疗数据信息'}
+            var sHtml=template('dismatched',sMessage)
+            $('.device-name').empty().append(sHtml)
+        }
+    }
+
+</script>

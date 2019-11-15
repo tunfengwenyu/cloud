@@ -1,0 +1,331 @@
+<div class="row">
+    <div class="top-handle-btn">
+        <form id="search-form" action="javascript:;">
+            <button class="btn-sm btn radius6 search">
+                <i class="fa fa-refresh"></i>
+            </button>
+            <select name="pageSize" class="form-control page-size  input-small inline">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+            <input type="text" placeholder="方案名称查询" class="form-control input-inline" name="schemeName"/>
+            <button class="btn purple right search radius6"><i class="fa fa-search"></i> 查询</button>
+            <a class='btn green radius6' data-toggle='modal'
+               onclick="addScheme()"><i
+                    class="fa fa-plus"></i> 添加</a>
+            <a class='btn green radius6' data-toggle='modal' data-roles="ROLE_SUPER"
+               onclick="addSchemeType()"><i
+                    class="fa fa-plus"></i>添加方案类型</a>
+            <!--<a class='btn green radius6' data-toggle='modal' style="display: none" data-roles="ROLE_CHILD" onclick="addThera()"><i-->
+            <!--class="fa fa-plus"></i>指定服务治疗师</a>-->
+        </form>
+    </div>
+</div>
+
+<div id="modals">
+    <div class="modal fade" id="modal-show" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">绑定的设备类型</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="javascript:;" method="post" name="updateExpress">
+                        <input type="hidden" name="id">
+                        <table class="table table-striped table-bordered " width="100%">
+                            <thead>
+                            <tr>
+                                <th>类型名称</th>
+                                <th>设备码</th>
+                            </tr>
+                            </thead>
+                            <tbody class="checkDeviceType">
+
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
+                            class="fa fa-close"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="modal fade" id="modal-therapist-bind" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">指定治疗师</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="javascript:;" method="post">
+                        <input type="hidden" name="id"/>
+                        <div class="apply pcd2">
+                            <table class="table table-striped table-bordered " width="100%">
+                                <tr>
+                                    <th width="100">服务名称</th>
+                                    <td><input type="text" class="form-control" name="serviceName" max="16" value="">
+                                    </td>
+                                    <input type="hidden" name="serviceNo"/>
+                                </tr>
+                                <tr>
+                                    <th width="100">指定治疗师</th>
+                                    <td>
+                                        <select class="form-control  input-medium inline" name="therapistId">
+                                            <option value="">-- 请选择 --</option>
+                                        </select>
+                                        <!--<input type="hidden" name="therapistName" data-ref="therapistId"/>-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
+                    </button>
+                    <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
+                            class="fa fa-close"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="modal fade" id="modal-role-edit" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog" style="width: 350px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">添加服务</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="javascript:;" method="post">
+                        <input type="hidden" name="id" value=""/>
+                        <div class="content_wrap">
+                            <ul id="ztree" class="ztree"></ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存修改
+                    </button>
+                    <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
+                            class="fa fa-close"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+
+<div class="row">
+    <table id="data-table" class="table table-striped table-bordered table-hover" width="100%">
+        <thead>
+        <tr>
+            <th>方案名称</th>
+            <th>方案编码</th>
+            <th>所属类型</th>
+            <th>方案创建人</th>
+            <th>介绍</th>
+            <th>使用次数</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var url = "/scheme";
+
+    function init() {
+
+        DataTable.init({
+            url: url,//ajax请求url
+            tableName: "data-table",//数据表table id
+            paramsFormName: "search-form",//查询参数form id
+            modal: "modals",//模态框div
+            authValid: true,
+            columns: [//列对应的字段数组，注意顺序
+                {data: "schemeName"},
+                {data: "schemeNo"},
+                {data: "schemeTypeName"},
+                {data: "therapistName"},
+                {
+                    data: "introduction",
+                    collect: {
+                        line: 3
+                    },
+                },
+                {data: "totalNum"},
+                // {data: "stationNo",visible:false},
+                // {data: "stationName"},
+                // {data: "id",replaceFn: "getType"}
+            ],
+            options: [//操作区域(id)
+                {
+                    icon: 'fa fa-edit',
+                    name: "编辑",
+                    color: "green",
+                    // option: "modal-edit",
+                    edit: true,
+                    // url: url,
+                    editMain: true,
+                    pre: "editScheme",
+//                    props: ["data-roles=ROLE_SUPER"]
+                },
+                {
+                    title: "绑定方案服务关系",
+                    icon: "fa fa-list-alt",
+                    option: "modal-role-edit",
+                    pre: "addSeviceToScheme",
+                    edit: true,
+                    submit: "saveScheme",
+//                    props: ["data-roles=ROLE_SUPER"]
+                },
+                {
+                    icon: 'fa fa-remove',
+                    name: "删除",
+                    color: "red",
+                    del: url,
+                    msg: "确定要删除该方案吗？"
+                },
+            ]
+        });
+    };
+
+
+    $(function () {
+        init();
+//        loadTherapist();
+    });
+
+
+    function loadServiceDeviceType(obj) {
+        $(".checkDeviceType").html("");
+        Shinez.get("/service/service-device-type", {"serviceId": obj}, function (ret) {
+            $.each(ret, function (k, v) {
+                $(".checkDeviceType").append("<tr></tr><td>" + v.typeName + "</td><td>" + v.identCode + "</td></tr>");
+            });
+            $('#modal-show').modal("show");
+        });
+    }
+
+
+    function loadTherapist() {
+        Shinez.get("/therapist/all",function (ret) {
+            $.each(ret, function (k, v) {
+                $("select[name=therapistId]").append("<option value='" + v.id + "'>" + v.therapistName + "</option>");
+            });
+        })
+    }
+
+    function chooseTherapist(id) {
+        var serviceNo = $("tr[data-id=" + id + "]").find("td[data-name=serviceNo]").attr("data-value");
+        Shinez.get("/service/therapist/"+serviceNo,function (ret) {
+            if(ret!=null && ret!=undefined ){
+                $("select[name=therapistId]").val(ret.therapistId);
+            }
+
+        })
+    }
+
+
+    function saveScheme() {
+        var treeObj = $.fn.zTree.getZTreeObj("ztree");
+        var changeNodes = treeObj.getCheckedNodes(true);
+        var schemeId = $("#modal-role-edit").find("[name=id]").val();
+        if (changeNodes.length <= 0 || schemeId == null || schemeId == "") {
+            Shinez.tip("warning", "没有做任何更改");
+            $("#modal-role-edit").modal('hide');
+            return;
+        }
+        var schemeNo = $("tr[data-id=" + schemeId + "]").find("td[data-name=schemeNo]").attr("data-value");
+
+        var nodesStr = "";
+
+        for (var i = 0; i < changeNodes.length; ++i) {
+            if (!changeNodes[i].parent) {
+                nodesStr += "serviceNos[" + i + "]=" + changeNodes[i].serviceNo + "&";
+            }
+        }
+        //nodesStr += "schemeNo="+schemeNo;
+        Shinez.post("/scheme/"+schemeNo, nodesStr, function (ret) {
+            if (ret.code == 0) {
+                Shinez.tip("success", "添加服务成功");
+                $("#modal-role-edit").modal('hide');
+            } else {
+                Shinez.tip("error", ret.msg);
+            }
+        });
+    }
+
+
+    function loadService() {
+        Shinez.get("/service/all", function (ret) {
+            if (ret.code == 0) {
+                var menusData = ret.data.jSONArray;
+                var setting = {
+                    check: {
+                        enable: true,
+                        chkboxType: {"Y": "ps", "N": "ps"}
+                    },
+                    data: {
+                        key: {
+                            checked: "checked",
+                            children: "childrenList",
+                            isParent: "isParent",
+                            isHidden: "isHidden",
+                            name: "stationName"
+
+                        },
+                        simpleData: {
+                            enable: false
+                        }
+                    }
+
+                };
+                $.fn.zTree.init($("#ztree"), setting, menusData);
+            } else {
+                Shinez.tip("error", ret.msg);
+            }
+        });
+    }
+
+    function addSchemeType() {
+        loadHtml("/basic/scheme_type");
+    }
+
+    function addScheme() {
+        loadHtml("/basic/scheme_add");
+    }
+
+    function editScheme(id) {
+        history.state.params = id;
+        loadHtml("/basic/scheme_edit");
+    }
+
+    function addSeviceToScheme(id) {
+        history.state.params = id;
+        loadHtml("/basic/scheme_service");
+    }
+
+</script>

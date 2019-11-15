@@ -1,0 +1,143 @@
+<div id="modals">
+</div>
+
+<div class="row">
+    <div class="top-handle-btn">
+        <form id="search-form" action="javascript:;">
+            <button class="btn-sm btn radius6 search">
+                <i class="fa fa-refresh"></i>
+            </button>
+            <select name="pageSize" class="form-control page-size  input-small inline">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+
+            <div style="display: inline-block;position: relative;top: 11px;">
+                <div class="input-group date  form_datetime " style="float: left">
+                    <span style="margin:8px">选择日期</span>
+                    <input type="text" size="16" style="height: 35px" name="startTime" readonly
+                           class="form-control input-small inline"/>
+                    <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                </div>
+                <div class="input-group date  form_datetime " style="float: left">
+                    <input type="text" size="16" style="height: 35px" name="endTime" readonly
+                           class="form-control input-small inline"/>
+                    <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                </div>
+            </div>
+            <select name="stationNo" class=" input-medium form-control inline select2-multiple">
+                <option value="">-- 选择站点 --</option>
+            </select>
+            <br><br>
+            <input type="text" name="userName" class="form-control input-medium inline"
+                   placeholder="治疗师"/>
+            <button type="button" class='btn grey output-btn radius6' onclick="exportData()"><i
+                    class="fa fa-download"></i> 导出
+            </button>
+        </form>
+    </div>
+</div>
+<div class="row" style="padding: 5px">
+    <table id="data-table" class="table table-striped table-bordered table-hover" width="100%">
+        <thead>
+        <tr style="background-color: #EEE">
+            <th>日期</th>
+            <th>治疗师</th>
+            <th>所属站点</th>
+            <th>业绩</th>
+            <th>提成</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+
+    var servicePage = {
+        order: "/statistics/therapist",
+        exportKey: "/export/export-key",
+        exportUrl: "/admin/export/statistics/therapist/file?key=",
+        station: "/basic/allStation"
+    }
+
+    var url = servicePage.order;
+    $(function () {
+
+        $(".form_datetime").datepicker({
+            format: "yyyy-mm-dd",
+            language: 'zh-CN',
+            autoclose: 1,
+        });
+
+        var date = new Date();
+        date = Shinez.FormateDate(date, "yyyy-MM-dd");
+        $("input[name=startTime]").val(date);
+        $("input[name=endTime]").val(date);
+        $('.form_datetime').datepicker('update');
+        loadStation();
+        // loadOrders();
+    });
+
+
+    function exportData() {
+        Shinez.xhr("GET", servicePage.exportKey, {}, true, function (key) {
+            if (typeof(key) === "string" && key !== undefined && key !== "") {
+                window.open(servicePage.exportUrl + key+"&" + $("#search-form").serialize());
+            } else {
+                Shinez.tip("error", "导出失败！" + key.msg);
+            }
+        });
+    }
+
+    function loadStation() {
+        Shinez.get(servicePage.station, function (ret) {
+            $(".opt-station").remove();
+            $.each(ret, function (k, v) {
+                $("select[name=stationNo]").append("<option class='opt-station' value='" + v.stationNo + "'>" + v.stationName + "</option>")
+            });
+
+            loadOrders();
+        })
+    }
+
+
+    function loadOrders() {
+        var query = history.state.query;
+        if (query) {
+            $.each(query, function (k, v) {
+                $("#search-form").find("*[name=" + k + "]").val(v);
+            })
+        }
+        DataTable.init({
+            url: url,
+            tableName: "data-table",
+            paramsFormName: "search-form",
+            modal: "modals",
+            columns: [
+                {
+                    data: "gmtCreate", type: "date"
+                },
+                {data: "therapistName"},
+                {data:"stationName"},
+                {data: "performance"},
+                {data: "pushMoney"},
+            ],
+        });
+    }
+
+
+</script>

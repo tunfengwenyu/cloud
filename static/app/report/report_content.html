@@ -1,0 +1,540 @@
+<div class="row">
+    <div class="report-content">
+        <button class="btn purple right radius6" onclick="goback()"><i class="fa fa-reply"></i>返回上一步
+        </button>
+        <div class="well well-sm report-userinfo text-center">
+
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    带有 title 的面板标题
+                </h3>
+            </div>
+            <div class="panel-body">
+                面板内容
+            </div>
+        </div>
+    </div>
+</div>
+<script id="pfaAnalysis" type="text/html">
+    <table class="table table-bordered report-table">
+        <thead>
+        <th style="width:20%">步骤</th>
+        <th style="width:12.5%;">描述</th>
+        <th>值</th>
+        <th>参考值</th>
+        <th>阶段得分</th>
+        <th style="width:30%;">总得分 {{ totalScore }}</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="2">步骤1：<br>前基线（放松60秒）</td>
+            <td >平均值</td>
+            <td >{{averageValue1}}</td>
+            <td >2-4</td>
+            <td rowspan="2">{{ stageScore1 }}</td>
+            <td rowspan="9">
+                <strong>评估总得分参考建议:</strong><br/>
+                <span><90分，建议至少进行1个疗程的治疗；</span><br/>
+                <span><80分，建议至少进行2个疗程的治疗；</span><br/>
+                <span><60分，强烈建议至少进行2个疗程的治疗；</span>
+            </td>
+        </tr>
+        <tr>
+            <td >变异系数</td>
+            <td >{{ coefficientVariation1 }}</td>
+            <td >&lt;0.3</td>
+        </tr>
+        <tr>
+            <td >步骤2：<br>5次快速收缩</td>
+            <td >最大值</td>
+            <td >{{ maxValue2 }}</td>
+            <td >30-40</td>
+            <td >{{ stageScore2}}</td>
+        </tr>
+        <tr>
+            <td rowspan="2">步骤3：<br>5次10秒持续收缩</td>
+            <td >平均值</td>
+            <td >{{ averageValue3 }}</td>
+            <td >20-30</td>
+            <td rowspan="2">{{ stageScore3 }}</td>
+        </tr>
+        <tr>
+
+            <td >变异系数</td>
+            <td >{{ coefficientVariation3 }}</td>
+            <td >&lt;0.3</td>
+        </tr>
+        <tr>
+            <td rowspan="2">步骤4：<br>60秒持续收缩</td>
+            <td >平均值</td>
+            <td >{{ averageValue4}}</td>
+            <td >20-25</td>
+            <td rowspan="2">{{ stageScore4 }}</td>
+        </tr>
+        <tr>
+
+            <td >变异系数</td>
+            <td >{{ coefficientVariation4 }}</td>
+            <td >&lt;0.3</td>
+        </tr>
+        <tr>
+            <td rowspan="2">步骤5：<br>后基线（60秒放松）</td>
+            <td >平均值</td>
+            <td >{{ averageValue5 }}</td>
+            <td >2-4</td>
+            <td rowspan="2">{{ stageScore5 }}</td>
+        </tr>
+        <tr>
+
+            <td >变异系数</td>
+            <td >{{ coefficientVariation5 }}</td>
+            <td >&lt;0.3</td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <span>盆底肌</span><br/>
+                <img src="../../images/def.png" alt="盆底肌" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <span>腹肌</span><br/>
+                <img src="../../images/def.png" alt="腹肌" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <strong>简要报告解读</strong><br/>
+                <span>1、前静息阶段：测试静息状态下的肌肉状态。大于4μV且变异性大于参考值，提示可能存在肌肉过度活跃。</span><br/>
+                <span>2、快速收缩阶段：测试快肌的功能。最大值过小，提示肌力不足。</span><br/>
+                <span>3、紧张收缩阶段：测试慢肌的肌力。平均值过小，提示肌力不足；变异性异常，提示肌肉稳定性差。</span><br/>
+                <span>4、耐力收缩阶段：测试慢肌的耐力。平均值过小，提示慢肌耐力较差。</span><br/>
+                <span>5、后静息阶段：测试一系列动作后，肌肉是否恢复正常状态。大于4μV且变异性大于参考值，提示可能存在肌肉过度活跃。</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <form action="#">
+                    <div>
+                        <label>盆底功能障碍：</label>
+                        <label>
+                            <input type="checkbox" name="dysfunction" value="a"/>松弛型
+                        </label>
+                        <label>
+                            <input type="checkbox" name="dysfunction" value="b"/>过度活动型
+                        </label>
+                        <label>
+                            <input type="checkbox" name="dysfunction" value="c"/>混合型
+                        </label>
+                    </div>
+                    <div>
+                        <label>盆底功能障碍：</label>
+                        <label>
+                            <input type="checkbox" name="rehabilitation" value="d"/>低频脉冲电刺激
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rehabilitation" value="e"/>Kegel训练
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rehabilitation" value="f"/>其他治疗
+                        </label>
+                    </div>
+                    <div>
+                        <label>盆底收缩协调性：</label>
+                        <label>
+                            <input type="checkbox" name="contraction" value="g"/>协调
+                        </label>
+                        <label>
+                            <input type="checkbox" name="contraction" value="h"/>不协调
+                        </label>
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-right">
+                            <label>医师签字：</label>
+                            <input type="text" style="border:none; border-bottom:1px solid #333;
+                            border-radius:0!important;"/>
+                            <br/>
+                            <input type="submit" value="提交" class="btn btn-success"/>
+                        </div>
+                    </div>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script id="mmtAnalysis" type="text/html">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td>
+                <strong>病史：</strong><br/>
+                <textarea name="sickHistory" row="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>建议：</strong><br/>
+                <textarea name="advicement" row="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>训练肌肉：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>训练项目：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>统计结果：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>治疗开始时间：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>治疗时间：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>最大值(μV):</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>最小值(μV):</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>训练描述：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>训练备注：</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="btn btn-success" type="button">提交</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script id="mmtTrend" type="text/html">
+    <table class="table table-bordered">
+        <thead>
+        <th>项目</th>
+        <th>最大值</th>
+        <th>最小值</th>
+        <th>平均值</th>
+        </thead>
+        <tbody>
+        <tr>
+
+        </tr>
+        <tr>
+            <td colspan="4">
+                <div>
+                    <img src="../../images/def.png" alt="趋势报告图"/>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script id="semgStandard" type="text/html">
+    <table class="table">
+        <tbody>
+        <tr>
+            <td colspan="2">
+                <div>
+                    <img src="../../images/def.png" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div>
+                    <img src="../../images/def.png" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <caption>所有周期的波幅均值</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>平均值(μV)</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{channel}}</td>
+                            <td>{{meanValue}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table table-bordered">
+                    <caption>所有周期的面积</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>面积(μV*s)</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{area}}</td>
+                            <td>{{kind}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong>结论与建议:</strong><br/>{{conclusion}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script id="semgFatigue" type="text/html">
+    <table class="table">
+        <tbody>
+        <tr>
+            <td colspan="2">
+                <div>
+                    <img src="../../images/def.png" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div>
+                    <img src="../../images/def.png" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <caption>平均频率统计表</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>斜率</th>
+                    <th>截取值</th>
+                    <th>差异率</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table table-bordered">
+                    <caption>中值频率统计表</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>斜率</th>
+                    <th>截取值</th>
+                    <th>差异率</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div>
+                    <img src="../../images/def.png" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <caption>过零率统计表</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>斜率</th>
+                    <th>截取值</th>
+                    <th>差异率</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table table-bordered">
+                    <caption>平均波幅统计表</caption>
+                    <thead>
+                    <th>通道</th>
+                    <th>斜率</th>
+                    <th>截取值</th>
+                    <th>差异率</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong>结论与建议:</strong>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script>
+    var Params=history.state.params.split('&');
+    var reportNo=Params[0];
+    var programDataId=Params[1];
+    var reportTitle=Params[2];
+    //console.log(reportNo,programDataId,reportTitle)
+    function goback(){
+        loadHtml('/report/record')
+    }
+    //获取用户信息
+    function getUserInfo(args){
+        var urls='/user/all';
+        urls=urls+'?idCode='+args;
+        Shinez.get(urls,function(ret){
+            $.each(ret,function(k,v){
+                var sSpan=`<span>病历号：${reportNo}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>姓名：${v.userName}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>年龄：${getAge(v.age)}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>性别：${getGender(v.sex)}</span>`;
+                $('.report-userinfo').empty().append(sSpan);
+            });
+
+        })
+    }
+
+    //年龄的判断是否存在，不存在时用-替代
+    function getAge(args){
+        if(args==true){
+            return args;
+        }else{
+            return '保密'
+        }
+    }
+    //将性别装换成中文
+    function getGender(args){
+        if(args==true){
+            return '女'
+        }else{
+            return '男'
+        }
+    }
+
+    //报告表格
+    function turnReportStyle(rName,args){
+        $('.panel-title').empty().html(function(){
+            return reportTitle +' - '+
+            '<span class="label label-info radius4" style="font-size:10px;">'+rName+'</span>';
+        });
+
+        //根据报告类型生成不同的报告样式
+        switch(rName){
+            case "semgStandard":
+                getSemgStandard(args);
+                break;
+            case "pfaAnalysis":
+                getPfaAnalysis(args);
+                break;
+            case "semgFatigue":
+                getSemgFatigue(args);
+                break;
+            case "semgTrend":
+                getSemgTrend(args);
+                break;
+            case "mmtAnalysis":
+                getMmtAnalysis(args);
+                break;
+            case "mmtTrend":
+                getMmtTrend(args);
+                break;
+        }
+    }
+
+    //多媒体分析报告
+    function getMmtAnalysis(args){
+        var sHtml=template('mmtAnalysis',args);
+        $('.panel-body').empty().append(sHtml)
+    }
+    //多媒体趋势报告
+    function getMmtTrend(args){
+        var sHtml=template('mmtTrend',args);
+        $('.panel-body').empty().append(sHtml)
+    }
+    //标准报告
+    function getSemgStandard(args){
+        var sHtml=template('semgStandard',args);
+        $('.panel-body').empty().append(sHtml)
+    }
+    //频率报告
+    function getSemgFatigue(args){
+        var sHtml=template('semgFatigue',args);
+        $('.panel-body').empty().append(sHtml)
+    }
+    //评估报告
+    function getPfaAnalysis(args){
+        var sHtml=template('pfaAnalysis',args);
+        $('.panel-body').empty().append(sHtml)
+    }
+
+    $(function(){
+        var urls='/report/alldata/?pageIndex=1&pageSize=1';
+        urls=urls+'&reportNo='+reportNo;
+        //获取当前用户的基本信息
+        Shinez.get(urls,function(ret){
+            $.each(ret,function(k,v){
+                var userId= v.userIdCode;
+                getUserInfo(userId)
+            })
+        });
+
+        //定义报告类型的变量
+        var aReportObject=[];
+        //生成报告的模板
+        Shinez.get('/report/'+reportNo,function(ret){
+            if(ret.code==0){
+                var arr=Object.keys(ret.data);
+                //console.log('arr',arr)
+                for(let i=0;i<arr.length;i++){
+                    aReportObject[i]=function(){
+                        ret.data[arr[i]].find(function(value,index){
+                            if(value.programDataId==programDataId){
+                                //console.log(arr[i],value)
+                                //正式生成报告的样式
+                                turnReportStyle(arr[i],value)
+                            }
+                        })
+                    }
+                }
+                for(let iNum=0;iNum<aReportObject.length;iNum++){
+                    aReportObject[iNum]()
+                }
+            }
+        })
+
+
+    })
+</script>

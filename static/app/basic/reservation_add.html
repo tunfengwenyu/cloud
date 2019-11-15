@@ -1,0 +1,168 @@
+    <form action="javascript:;" id="form-project" method="post" onsubmit="false">
+        <div class="row" style="margin-left: 20px">
+            <div style="width: 1200px">
+                <table class="table table-striped table-bordered " width="100%">
+                    <tr>
+                        <th width="100">服务名称</th>
+                        <td><input type="text" class="form-control" name="reservationName" max="16" value=""></td>
+                    </tr>
+                    <tr>
+                        <th width="100">所属类型</th>
+                        <td>
+                            <select class="form-control  input-medium inline" name="typeId">
+                                <option>-- 请选择 --</option>
+                            </select>
+                            <input type="hidden" name="typeName" data-ref="typeId"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>服务列表小图</th>
+                        <td>
+                            <div class="pull-left">
+                                <input type="file" class="hidden">
+                                <a href="javascript:;" style="width: 100px;height: 100px;" class="btn-upload">
+                                    <span>选择图片</span>
+                                    <img name="img" src="../../images/def.png" width="100" height="100">
+                                </a>
+                                <input type="hidden" name="reservationBanner" value=""/>
+                                <p><span class="required-star">* 建议尺寸：220*220px，大小不超过150k</span></p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>服务图片：</th>
+                        <td colspan="4">
+                            <div class="upload-multiple">
+                                <div class="pull-left">
+                                    <button class="img-del" data-index="0">x</button>
+                                    <input type="file" class="hidden">
+                                    <a href="javascript:;" style="width: 100px;height: 100px;margin:5px;"
+                                       class="btn-upload">
+                                        <span class="img-tip">选择图片</span>
+                                        <img name="imgUrl" src="../../images/def.png" width="100" height="100">
+                                    </a>
+                                    <input type="hidden" name="reservationDetailImgs" value=""/>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>收费编码</th>
+                        <td><input type="text" class="form-control" name="chargeCode" max="32" value="">
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>服务定价</th>
+                        <td>
+                            <input type="number" class="form-control input-medium" name="reservationAmount" min="0"
+                                   step="0.01"/>
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>关联项目</th>
+                        <td>
+                            <input type="text" class="form-control" name="relatedItems" max="32" value="">
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>禁忌症</th>
+                        <td>
+                            <textarea class="form-control" placeholder="忌症" name="contraindications"/>
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>赠送积分</th>
+                        <td>
+                            <input type="number" class="form-control" placeholder="赠送积分" name="giftPoints" min="0"  step="1" oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"/>
+                        </td>
+                    </tr>
+                    <tr width="100">
+                        <th>备注</th>
+                        <td>
+                            <textarea class="form-control" placeholder="备注" name="remark"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>服务简介：</th>
+                        <td colspan="3">
+                            <div id="editor-trigger" style="height: 450px;">
+                                <p>请输入内容...</p>
+                            </div>
+                            <input type="hidden" name="introduction"/>
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer">
+                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
+                    <button type="button" class="btn dark btn-outline radius6" onclick="goback()"><i
+                            class="fa fa-close"></i> 关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+<script type="text/javascript" src="js/wangEditor.min.js"></script>
+<script type="text/javascript">
+
+    var editor;
+    $(function () {
+        registerImageUploadComponent();
+        loadClassifyTypes();
+        Shinez.get("/main/qiniu-token", function (ret) {
+            var token = ret.data.uploadToken;
+            var domain = ret.data.domain;
+            initEditor(token, domain);
+        });
+    });
+
+    function initEditor(token, domain) {
+        editor = new wangEditor('editor-trigger');
+        editor.config.customUpload = true;  // 设置自定义上传的开关
+        editor.config.customUploadInit = function () {
+            QiniuInit.init(editor, token, domain);
+        };
+        // 取消粘贴过滤
+        editor.config.pasteFilter = false;
+        // 关闭js过滤
+        editor.config.jsFilter = false;
+        editor.config.menus = $.map(wangEditor.config.menus, function (item, key) {
+            if (item === 'fullscreen') {
+                return null;
+            }
+            return item;
+        });
+        editor.create();
+    }
+
+    $(".btn-save").click(function () {
+        var html = editor.$txt.html();
+        $("input[name='introduction']").val(html);
+        Shinez.post("/reservation",$("#form-project").serialize(),function (ret) {
+            if(ret.code===0){
+                loadHtml("/basic/reservation");
+            }else{
+                Shinez.tip("error",ret.msg);
+            }
+        });
+    });
+
+    function loadClassifyTypes() {
+        Shinez.get("/reservation/all/1",function (ret) {
+            $.each(ret, function (k, v) {
+                $("select[name=typeId]").append("<option value='" + v.id + "'>" + v.typeName + "</option>");
+            });
+        })
+    }
+
+
+    function goback(){
+        loadHtml("/basic/reservation");
+    }
+
+
+
+
+</script>
