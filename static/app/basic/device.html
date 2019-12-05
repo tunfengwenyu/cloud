@@ -26,6 +26,24 @@
                                 <th>CPU</th>
                                 <td><input type="text" class="form-control " name="cpu" value=""></td>
                             </tr>
+                            <tr>
+                                <th>设备总共使用次数</th>
+                                <td><input type="number" class="form-control " name="surplus" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>设备最后使用期限</th>
+                                <td>
+                                    <div class="input-group date  form_datetime " style="float: left">
+                                        <input type="text" size="16" style="height: 35px" name="expiryDate" readonly
+                                               class="form-control input-small inline"/>
+                                        <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
                         </table>
                     </form>
                 </div>
@@ -65,6 +83,24 @@
                             <tr>
                                 <th>CPU</th>
                                 <td><input type="text" class="form-control" name="cpu" max="64" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>设备总共使用次数</th>
+                                <td><input type="number" class="form-control " name="surplus" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>设备最后使用期限</th>
+                                <td>
+                                    <div class="input-group date  form_datetime " style="float: left">
+                                        <input type="text" size="16" style="height: 35px" name="expiryDate" readonly
+                                               class="form-control input-small inline"/>
+                                        <span class="input-group-btn">
+                                        <button class="btn default date-set" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                        </span>
+                                    </div>
+                                </td>
                             </tr>
                         </table>
                     </form>
@@ -115,6 +151,8 @@
             <th>CPU</th>
             <th>设备状态</th>
             <th>是否报修</th>
+            <th>总共使用次数</th>
+            <th>总共使用次数</th>
         </tr>
         </thead>
         <tbody>
@@ -126,7 +164,8 @@
 <script type="text/javascript">
 
     var url = "/basic/device";
-    var UserRole=''
+    var UserRole = ''
+
     function init() {
         DataTable.init({
             url: url,//ajax请求url
@@ -138,8 +177,10 @@
                 {data: "identCode", visible: false},
                 {data: "typeName"},
                 {data: "cpu"},
-                {data: "deviceStatus",replaceFn:'getStatusValue2'},
-                {data: "isRepair",replaceFn:'getRepairCheck2'},
+                {data: "deviceStatus", replaceFn: 'getStatusValue2'},
+                {data: "isRepair", replaceFn: 'getRepairCheck2'},
+                {data: "surplus"},
+                {data: "expiryDate"}
             ],
             options: [//操作区域(id)
                 {
@@ -166,25 +207,36 @@
                 ]
             },
             // endFnOnce: "loadTypes",
-            endFn:'loadData'
+            endFn: 'loadData'
         });
     }
 
     $(function () {
-        UserRole=getUserRole()
+        $(".form_datetime").datepicker({
+            format: "yyyy-mm-dd",
+            language: 'zh-CN',
+            autoclose: 1,
+        });
+
+        var date = new Date();
+        date = Shinez.FormateDate(date, "yyyy-MM-dd");
+        $("input[name=expiryDate]").val(date);
+        $('.form_datetime').datepicker('update');
+        UserRole = getUserRole()
         loadTypes()
     });
+
     //获取用户角色
-    function getUserRole(){
-        var aRoleData=JSON.parse(localStorage.getItem('authorities'))
-        var userRole=aRoleData[0].authority
+    function getUserRole() {
+        var aRoleData = JSON.parse(localStorage.getItem('authorities'))
+        var userRole = aRoleData[0].authority
         return userRole
     }
 
 
     //设备状态的转换
-    function getStatusValue(args){
-        switch(args){
+    function getStatusValue(args) {
+        switch (args) {
             case '0':
                 return '<a class="label label-primary radius6" data-value="0" style="font-size:12px;" onclick="changeDeviceStatus(this)">正常</a>'
                 break
@@ -196,27 +248,28 @@
                 break
         }
     }
-    //设备状态的转换
-    function getStatusValue2(args){
-        switch(args.toString()){
-            case '0':
-                    return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-on-color="info" data-size="small" data-on-text="正常" data-off-text="停用" class="ban-status-sw" checked>'
 
-                    break
+    //设备状态的转换
+    function getStatusValue2(args) {
+        switch (args.toString()) {
+            case '0':
+                return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-on-color="info" data-size="small" data-on-text="正常" data-off-text="停用" class="ban-status-sw" checked>'
+
+                break
             case '1':
-                    return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-size="small" data-on-color="success"  data-on-text="登录" disabled data-off-text="停用" checked  class="ban-status-sw" >'
-                    break
+                return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-size="small" data-on-color="success"  data-on-text="登录" disabled data-off-text="停用" checked  class="ban-status-sw" >'
+                break
             case '2':
-                    return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-size="small" data-off-color="danger" data-on-text="正常" data-off-text="停用" class="ban-status-sw" >'
-                    break
+                return '<input onChange="isRepairCheck2(this)" type="checkbox" name="check-repair" data-size="small" data-off-color="danger" data-on-text="正常" data-off-text="停用" class="ban-status-sw" >'
+                break
         }
 
 
-
     }
+
     //根据当前的报修状态转变值
-    function getRepairCheck(args){
-        switch(args){
+    function getRepairCheck(args) {
+        switch (args) {
             case 'false':
                 return '<input onChange="isRepairCheck(this)" type="checkbox" name="check-repair" data-on-color="danger" data-size="small" class="ban-status-sw">'
                 break
@@ -225,9 +278,10 @@
                 break
         }
     }
+
     //根据当前的报修状态转变值
-    function getRepairCheck2(args){
-        switch(args){
+    function getRepairCheck2(args) {
+        switch (args) {
             case 'false':
                 return '<a class="label label-danger radius6" data-value="0" style="font-size:12px;" onclick="changeDeviceStatus2(this)">已报修</a>'
                 break
@@ -257,76 +311,76 @@
         loadHtml("/basic/deviceType");
     }
 
-    function loadData(ret){
-        if(UserRole!='ROLE_SUPER'){
-            $('*[name=check-repair]').attr('readonly',true)
+    function loadData(ret) {
+        if (UserRole != 'ROLE_SUPER') {
+            $('*[name=check-repair]').attr('readonly', true)
         }
     }
 
     //点击改变设备的状态
-    function changeDeviceStatus(dom){
-        var sVal=$(dom).attr('data-value')
-        var params={}
-        params['cpu']=$(dom).parents('tr').find('td[data-name=cpu]').text()
-        params['identCode']=$(dom).parents('tr').find('td[data-name=identCode]').text()
-        switch(sVal.toString()){
+    function changeDeviceStatus(dom) {
+        var sVal = $(dom).attr('data-value')
+        var params = {}
+        params['cpu'] = $(dom).parents('tr').find('td[data-name=cpu]').text()
+        params['identCode'] = $(dom).parents('tr').find('td[data-name=identCode]').text()
+        switch (sVal.toString()) {
             case '0':
-                params['deviceStatus']=2;
+                params['deviceStatus'] = 2;
                 //调用改变状态的api地址
                 getDeviceStatus(params)
                 break
             case '1':
-                params['deviceStatus']=1
+                params['deviceStatus'] = 1
                 return
                 break
             case '2':
-                params['deviceStatus']=0;
+                params['deviceStatus'] = 0;
                 getDeviceStatus(params)
                 break
         }
     }
 
-    function getDeviceStatus(args){
-        var sParam=JSON.stringify(args).replace(/{*}*/g,'')
-        sParam=sParam.replace(/[:*]/g,'=')
-        sParam=sParam.replace(/[,*]/g,'&')
-        sParam=sParam.replace(/["*]/g,'')
-        Shinez.put('/basic/device/status?'+sParam,function(ret){
-            if(ret.code==0){
+    function getDeviceStatus(args) {
+        var sParam = JSON.stringify(args).replace(/{*}*/g, '')
+        sParam = sParam.replace(/[:*]/g, '=')
+        sParam = sParam.replace(/[,*]/g, '&')
+        sParam = sParam.replace(/["*]/g, '')
+        Shinez.put('/basic/device/status?' + sParam, function (ret) {
+            if (ret.code == 0) {
                 //$(".search").trigger("click");
-                setTimeout(function(){
+                setTimeout(function () {
                     $(".search").trigger("click");
-                },500)
+                }, 500)
             }
         })
     }
 
     //是否报修的操作
-    function isRepairCheck(dom){
-        var sVal=$(dom).bootstrapSwitch('state')
-        var params={}
-        params['cpu']=$(dom).parents('tr').find('td[data-name=cpu]').text()
-        params['identCode']=$(dom).parents('tr').find('td[data-name=identCode]').text()
-        if(sVal){
-            params['isRepair']=1
+    function isRepairCheck(dom) {
+        var sVal = $(dom).bootstrapSwitch('state')
+        var params = {}
+        params['cpu'] = $(dom).parents('tr').find('td[data-name=cpu]').text()
+        params['identCode'] = $(dom).parents('tr').find('td[data-name=identCode]').text()
+        if (sVal) {
+            params['isRepair'] = 1
             getRepairStatus(params)
-        }else{
-            params['isRepair']=0
+        } else {
+            params['isRepair'] = 0
             getRepairStatus(params)
         }
 
     }
 
 
-    function getRepairStatus(args){
-        var sParam=JSON.stringify(args).replace(/{*}*/g,'')
-        sParam=sParam.replace(/[:*]/g,'=')
-        sParam=sParam.replace(/[,*]/g,'&')
-        sParam=sParam.replace(/["*]/g,'')
-        Shinez.put('/basic/device/repair?'+sParam,function(ret){
-            if(ret.code!=0){
+    function getRepairStatus(args) {
+        var sParam = JSON.stringify(args).replace(/{*}*/g, '')
+        sParam = sParam.replace(/[:*]/g, '=')
+        sParam = sParam.replace(/[,*]/g, '&')
+        sParam = sParam.replace(/["*]/g, '')
+        Shinez.put('/basic/device/repair?' + sParam, function (ret) {
+            if (ret.code != 0) {
                 Shinez.tip("error", ret.msg);
-            }else{
+            } else {
                 /*Shinez.tip("success", ret.msg);
                 setTimeout(function(){
                     $(".search").trigger("click");
@@ -338,35 +392,35 @@
 
 
     //点击改变设备的状态
-    function changeDeviceStatus2(dom){
-        if(UserRole=='ROLE_SUPER'){
-            var sVal=$(dom).attr('data-value')
-            var params={}
-            params['cpu']=$(dom).parents('tr').find('td[data-name=cpu]').text()
-            params['identCode']=$(dom).parents('tr').find('td[data-name=identCode]').text()
-            if(sVal==0){
-                params['isRepair']=1
+    function changeDeviceStatus2(dom) {
+        if (UserRole == 'ROLE_SUPER') {
+            var sVal = $(dom).attr('data-value')
+            var params = {}
+            params['cpu'] = $(dom).parents('tr').find('td[data-name=cpu]').text()
+            params['identCode'] = $(dom).parents('tr').find('td[data-name=identCode]').text()
+            if (sVal == 0) {
+                params['isRepair'] = 1
                 getRepairStatus(params)
-            }else if(sVal==1){
-                params['isRepair']=0
+            } else if (sVal == 1) {
+                params['isRepair'] = 0
                 getRepairStatus(params)
             }
         }
     }
 
     //是否报修的操作
-    function isRepairCheck2(dom){
-        if(UserRole=='ROLE_SUPER'){
-            var sVal=$(dom).bootstrapSwitch('state')
-            var params={}
-            params['cpu']=$(dom).parents('tr').find('td[data-name=cpu]').text()
-            params['identCode']=$(dom).parents('tr').find('td[data-name=identCode]').text()
+    function isRepairCheck2(dom) {
+        if (UserRole == 'ROLE_SUPER') {
+            var sVal = $(dom).bootstrapSwitch('state')
+            var params = {}
+            params['cpu'] = $(dom).parents('tr').find('td[data-name=cpu]').text()
+            params['identCode'] = $(dom).parents('tr').find('td[data-name=identCode]').text()
 
-            if(sVal){
-                params['deviceStatus']=0
+            if (sVal) {
+                params['deviceStatus'] = 0
                 getDeviceStatus(params)
-            }else{
-                params['deviceStatus']=2;
+            } else {
+                params['deviceStatus'] = 2;
                 //调用改变状态的api地址
                 getDeviceStatus(params)
             }
