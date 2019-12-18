@@ -440,9 +440,9 @@
     }
 
     function loadInstitutionTypes() {
-        Shinez.get("/basic/allStation",function (ret) {
+        Shinez.get("/basic/allInstitution",function (ret) {
             $.each(ret, function (k, v) {
-                $("select[name=institutionNo]").append("<option value='" + v.stationNo + "'>" + v.stationName + "</option>");
+                $("select[name=institutionNo]").append("<option value='" + v.institutionNo + "'>" + v.institutionName + "</option>");
             });
         })
     }

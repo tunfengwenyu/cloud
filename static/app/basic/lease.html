@@ -63,7 +63,7 @@
             <th>租赁编码</th>
             <th>租赁类型</th>
             <th>站点名称</th>
-            <th>租赁数量</th>
+            <th>租赁价格</th>
             <th>租赁日期</th>
         </tr>
         </thead>
@@ -130,8 +130,9 @@
     $(function () {
         getStationName(function(ret){
             aStationInfo=ret;
+            init();
         })
-        init();
+
         
     });
 
@@ -169,7 +170,7 @@
     }
 
     function loadStationDeviceType(obj) {
-        Shinez.get("/service/station-device-type", {"id": obj}, function (ret) {
+        Shinez.get("/lease/station-device-type", {"id": obj}, function (ret) {
             if (ret.code == 0) {
                 var menusData = ret.data.jSONArray;
                 var setting = {

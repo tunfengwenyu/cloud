@@ -283,10 +283,10 @@
     function getRepairCheck2(args) {
         switch (args) {
             case 'false':
-                return '<a class="label label-danger radius6" data-value="0" style="font-size:12px;" onclick="changeDeviceStatus2(this)">已报修</a>'
+                return '<a class="label label-success radius6" data-value="0" style="font-size:12px;" onclick="changeDeviceStatus2(this)">未报修</a>'
                 break
             case true:
-                return '<a class="label label-success radius6" data-value="1" style="font-size:12px;" onclick="changeDeviceStatus2(this)">未报修</a>'
+                return '<a class="label label-danger radius6" data-value="1" style="font-size:12px;" onclick="changeDeviceStatus2(this)">已报修</a>'
                 break
         }
     }
