@@ -279,7 +279,13 @@
             let ret=allUser.find((item,index)=>{
                 return item.id==val;
             })
-            return ret.userName;
+            if(ret!=undefined){
+                return ret.userName;
+            }else{
+                Shinez.tip('warning',`当前用户Id=${val}不存在于用户信息中`)
+                return '-'
+
+            }
         }
     }
     //绑定服务名次

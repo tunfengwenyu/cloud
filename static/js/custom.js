@@ -3,7 +3,8 @@
  */
 
 const custom = {
-    domain: "http://172.16.4.128/admin",
+    //domain: "http://172.16.4.128/admin",
+    domain: "http://cms-source.kfylt.cn/admin",
     authAlias: "Nougat",
     authHeader: "Authorization",
 }
