@@ -81,11 +81,11 @@
     };
 
     function getSex(therapistSex){
-        if(!therapistSex || therapistSex=="false"){
-            return "男";
-        }
-        if(therapistSex || therapistSex=="true"){
-            return "女";
+        switch(therapistSex.toString()){
+            case '0':return '其他';
+            case '1':return '男';
+            case '2':return '女';
+            default:return '-';
         }
     }
 

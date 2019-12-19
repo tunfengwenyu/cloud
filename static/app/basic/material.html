@@ -10,11 +10,11 @@
                     <form action="javascript:;" method="post">
                         <table class="table table-striped table-bordered " width="100%">
                             <tr>
-                                <th>材料名称</th>
+                                <th>耗材名称</th>
                                 <td><input class="form-control " type="text" name="materialName" value=""></td>
                             </tr>
                             <tr>
-                                <th>类型</th>
+                                <th>耗材类型</th>
                                 <td>
                                     <select class="form-control  input-medium inline" name="identCode">
                                         <option value="">-- 请选择类型 --</option>
@@ -23,22 +23,22 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>材料编码</th>
+                                <th>耗材编码</th>
                                 <td><input type="text" class="form-control " name="materialCode" value=""></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <th>耗材人姓名</th>
                                 <td><input type="text" class="form-control " name="userName" value=""></td>
                             </tr>
                             <tr>
                                 <th>耗材人ID</th>
                                 <td><input type="text" class="form-control " name="idCode" value=""></td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <th>过期日期</th>
                                 <td>
                                     <div class="input-group date  form_datetime " style="float: left">
-                                        <input type="text" size="16" style="height: 35px" name="expiryDate" readonly
+                                        <input type="text" size="16" style="height: 35px" name="expiryDate"
                                                class="form-control input-small inline"/>
                                         <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
@@ -52,8 +52,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" onclick="btnSave('#modal-add')" class="btn dark green radius6"><i class="fa fa-save"></i> 保存</button>
-                    <button style="display:none;" type="submit" class="btn dark btn-save radius6"><i class="fa fa-check"></i> 保存
+                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
                     </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
@@ -76,11 +75,11 @@
                         <input type="hidden" name="id" value=""/>
                         <table class="table table-striped table-bordered " width="100%">
                             <tr>
-                                <th>材料名称</th>
+                                <th>耗材名称</th>
                                 <td><input class="form-control " type="text" name="materialName" value=""></td>
                             </tr>
                             <tr>
-                                <th>类型</th>
+                                <th>耗材类型</th>
                                 <td>
                                     <select class="form-control  input-medium inline" name="identCode">
                                         <option value="">-- 请选择类型 --</option>
@@ -89,22 +88,22 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>材料编码</th>
+                                <th>耗材编码</th>
                                 <td><input type="text" class="form-control " readonly name="materialCode" value=""></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <th>耗材人姓名</th>
                                 <td><input type="text" class="form-control " name="userName" value=""></td>
                             </tr>
                             <tr>
                                 <th>耗材人ID</th>
                                 <td><input type="text" class="form-control " name="idCode" value=""></td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <th>过期日期</th>
                                 <td>
                                     <div class="input-group date  form_datetime " style="float: left">
-                                        <input type="text" size="16" style="height: 35px" name="expiryDate" readonly
+                                        <input type="text" size="16" style="height: 35px" name="expiryDate"
                                                class="form-control input-small inline"/>
                                         <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
@@ -118,9 +117,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="btnSave('#modal-edit')" class="btn dark green radius6"><i class="fa fa-check"></i> 保存
-                    </button>
-                    <button style="display:none;" type="submit" class="btn dark btn-save radius6"><i class="fa fa-check"></i> 保存
+                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
                     </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
@@ -160,11 +157,11 @@
     <table id="data-table" class="table table-striped table-bordered table-hover" width="100%">
         <thead>
         <tr>
-            <th>材料名称</th>
-            <th>类型</th>
-            <th>材料状态</th>
-            <th>耗材人ID</th>
-            <th>材料人姓名</th>
+            <th>耗材名称</th>
+            <th>耗材类型</th>
+            <th>耗材状态</th>
+            <!--<th>耗材人ID</th>
+            <th>材料人姓名</th>-->
             <th>创建日期</th>
             <th>过期日期</th>
         </tr>
@@ -178,6 +175,7 @@
 <script type="text/javascript">
 
     var url = "/material";
+
     function init() {
         DataTable.init({
             url: url,//ajax请求url
@@ -188,12 +186,12 @@
                 {data: "materialName"},
                 {data: "identCode", visible: false},
                 {data: "typeName"},
-                {data: "materialCode",visible:false},
-                {data: "materialStatus",replaceFn:'getStatusValue'},
-                {data:'idCode'},
-                {data:'userName'},
-                {data: "gmtCreate",type:'date'},
-                {data: "expiryDate",type:'date'},
+                {data: "materialCode", visible: false},
+                {data: "materialStatus", replaceFn: 'getStatusValue'},
+                /*{data:'idCode'},
+                {data:'userName'},*/
+                {data: "gmtCreate", type: 'date'},
+                {data: "expiryDate", type: 'date'},
             ],
             options: [//操作区域(id)
                 {
@@ -220,7 +218,7 @@
                 ]
             },
             // endFnOnce: "loadTypes",
-            //endFn:'loadData'
+            endFn: 'loadData'
         });
     }
 
@@ -235,21 +233,21 @@
         loadTypes();
     });
 
-    function getDateTimeFormat(){
+    function getDateTimeFormat() {
         var date = new Date();
         //date = Shinez.FormateDate(date, "yyyy-MM-dd");
-        let year=date.getFullYear()+2;
-        let month=date.getMonth()+1;
-        let dates=date.getDate();
-        year>10?year:'0'+year;
-        month>10?month:'0'+month;
-        dates>10?dates:'0'+dates;
-        date=year+'-'+month+'-'+dates
+        let year = date.getFullYear() + 2;
+        let month = date.getMonth() + 1;
+        let dates = date.getDate();
+        year > 10 ? year : '0' + year;
+        month > 10 ? month : '0' + month;
+        dates > 10 ? dates : '0' + dates;
+        date = year + '-' + month + '-' + dates
         $("input[name=expiryDate]").val(date);
         $('.form_datetime').datepicker('update');
     }
 
-    function btnSave(args){
+    /*function btnSave(args){
         var sId=$(args).find('input[name=idCode]').val()
         var reg=/^[1-9][0-9]{14}([0-9]{2}[0-9xX])?$/
         if(reg.test(sId)){
@@ -257,41 +255,118 @@
         }else{
             Shinez.tip('error','耗材人身份证ID有错误')
         }
-    }
+    }*/
 
-    function loadTypes(){
+    function loadTypes() {
         init();
-        Shinez.get('/material/type/all',function(ret){
-            if(ret.length>0){
+        Shinez.get('/material/type/all', function (ret) {
+            if (ret.length > 0) {
                 $.each(ret, function (k, v) {
                     $("select[name=identCode]").append("<option value='" + v.identCode + "'>" + v.typeName + "</option>");
                 });
-            }else{
-                Shinez.tip('error',`获取材料类型出错${ret.msg}`)
+            } else {
+                Shinez.tip('error', `获取材料类型出错${ret.msg}`)
             }
         });
 
     }
+
     function toType(e) {
         //e.preventDefault()
         loadHtml("/basic/material_type");
     }
+
     //材料状态的转换
-    function getStatusValue(args){
-        switch(args){
+    function getStatusValue(args) {
+        switch (args.toString()) {
             case '0':
-                return '<a class="label label-primary radius6" data-value="0" style="font-size:12px;" onclick="changeDeviceStatus(this)">正常</a>'
+                return `
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm radius6 dropdown-toggle "
+                                data-toggle="dropdown">
+                            正常
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a onclick="changeDeviceStatus(this,'1')">登录</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'2')">停用</a></li>
+                        </ul>
+                    </div>
+                `
                 break
             case '1':
-                return '<a class="label label-warning radius6" data-value="1" style="font-size:12px;" onclick="changeDeviceStatus(this)">登录</a>'
+                return `
+                    <div class="btn-group">
+                        <button type="button" class="btn green btn-sm radius6 dropdown-toggle"
+                                data-toggle="dropdown">
+                            登录
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a onclick="changeDeviceStatus(this,'0')">正常</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'2')">停用</a></li>
+                        </ul>
+                    </div>
+                `
                 break
             case '2':
-                return '<a class="label label-danger radius6" data-value="2" style="font-size:12px;" onclick="changeDeviceStatus(this)">停用</a>'
+                return `
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger btn-sm radius6 dropdown-toggle"
+                                data-toggle="dropdown">
+                            停用
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a onclick="changeDeviceStatus(this,'1')">登录</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'0')">正常</a></li>
+                        </ul>
+                    </div>
+                `
                 break
             default:
                 return '-'
         }
+
     }
 
+    function changeDeviceStatus(dom,val) {
+        let id = $(dom).parents('tr').attr('data-id')
+        if (allData) {
+            let ret = allData.find((item, index) => {
+                return item.id == id;
+            })
+
+            if(val=='2'){
+                let result=window.confirm('确定需要停用当前的耗材吗？')
+                if(!result){
+                    return
+                }
+            }
+            ret.materialStatus=Number(val)||''
+
+            saveChangeStatusValue(ret)
+
+        }
+    }
+
+    function saveChangeStatusValue(ret){
+        let {id,identCode,materialCode,typeName,materialStatus,materialName}=ret;
+        let param='';
+        for(let [key,val] of Object.entries({id,identCode,materialCode,typeName,materialStatus,materialName})){
+            param+=key+'='+val+'&'
+        }
+        Shinez.put(`${url}?${param}`,function(ret){
+            if(ret.code==0){
+                $('.search').trigger('click');
+            }else{
+                Shinez.tip('error',`错误提示:${ret.msg}`)
+            }
+        })
+    }
+
+    //获取当前列表的所有数据
+    var allData;
+
+    function loadData(ret) {
+        allData = ret.page.list;
+    }
 
 </script>

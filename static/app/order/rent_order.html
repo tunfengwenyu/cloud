@@ -28,7 +28,7 @@
                                 <th>归还日期</th>
                                 <td>
                                     <div class="input-group date  form_datetime " style="float: left">
-                                        <input type="text" size="16" style="height: 35px" name="lastDate" readonly
+                                        <input type="text" size="16" style="height: 35px" name="lastDate"
                                                class="form-control input-medium inline"/>
                                         <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
@@ -71,7 +71,7 @@
             <div style="display: inline-block;position: relative;top: 11px;">
                 <div class="input-group date  form_datetime " style="float: left">
                     <span style="margin:8px">购买日期</span>
-                    <input type="text" size="16" style="height: 35px" name="startTime" readonly
+                    <input type="text" size="16" style="height: 35px" name="startTime"
                            class="form-control input-small inline"/>
                     <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
@@ -80,7 +80,7 @@
                                         </span>
                 </div>
                 <div class="input-group date  form_datetime " style="float: left">
-                    <input type="text" size="16" style="height: 35px" name="endTime" readonly
+                    <input type="text" size="16" style="height: 35px" name="endTime"
                            class="form-control input-small inline"/>
                     <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
@@ -280,6 +280,10 @@
     function editLease(args){
         var leaseNo=args.leaseNo;
         var stationName=args.stationName
+        var deviceName=args.deviceName||''
+        var isReturn=args.isReturn || false;
+        $('input[name=isReturn]').bootstrapSwitch('state',isReturn);
+        $("select[name=deviceName]").empty().append("<option class='opt-station' value='" + deviceName + "'>" + deviceName + "</option>")
         Shinez.get('/lease?pageIndex=0&pageSize=1&leaseNo='+leaseNo,function(ret){
             if(ret.data.page.list.length>0){
                 var ids=ret.data.page.list[0].id
@@ -297,24 +301,10 @@
                     })
                 })
             }else{
-                Shinez.tip('error','租赁订单的编号无效:leaseNo-'+leaseNo)
+                Shinez.tip('error',`租赁订单的编号leaseNo-${leaseNo}无效，没有查询到该编号下绑定的租赁设备`)
             }
         })
     }
-    /*//转变设备的名称
-    function getDeviceById(args){
-        var result=aDeviceName.filter(function(item,index){
-            if(item.id==args){
-                return item
-            }
-        })
-        console.log(result)
-        if(result.length>0){
-            return result[0].deviceName
-        }else{
-            return '-'
-        }
-    }*/
     //改变订单状态的格式
     function changeStatusByZh(args){
         switch(args.toString()){
