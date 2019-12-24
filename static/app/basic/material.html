@@ -282,13 +282,12 @@
             case '0':
                 return `
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary btn-sm radius6 dropdown-toggle "
-                                data-toggle="dropdown">
-                            正常
+                        <button type="button" class="btn btn-default btn-sm radius6 dropdown-toggle " data-toggle="dropdown" style="background-color:#dedede;">
+                            未使用
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="changeDeviceStatus(this,'1')">登录</a></li>
-                            <li><a onclick="changeDeviceStatus(this,'2')">停用</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'1')">已使用</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'2')">已报废</a></li>
                         </ul>
                     </div>
                 `
@@ -296,14 +295,10 @@
             case '1':
                 return `
                     <div class="btn-group">
-                        <button type="button" class="btn green btn-sm radius6 dropdown-toggle"
+                        <button type="button" class="btn btn-primary btn-sm radius6 dropdown-toggle"
                                 data-toggle="dropdown">
-                            登录
+                            已使用
                         </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="changeDeviceStatus(this,'0')">正常</a></li>
-                            <li><a onclick="changeDeviceStatus(this,'2')">停用</a></li>
-                        </ul>
                     </div>
                 `
                 break
@@ -312,11 +307,11 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-danger btn-sm radius6 dropdown-toggle"
                                 data-toggle="dropdown">
-                            停用
+                            已报废
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="changeDeviceStatus(this,'1')">登录</a></li>
-                            <li><a onclick="changeDeviceStatus(this,'0')">正常</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'1')">已使用</a></li>
+                            <li><a onclick="changeDeviceStatus(this,'0')">未使用</a></li>
                         </ul>
                     </div>
                 `

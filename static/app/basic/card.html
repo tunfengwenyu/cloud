@@ -22,19 +22,22 @@
                             </tr>
                             <tr>
                                 <th>绑定服务</th>
-                                <td>
-                                    <select name="serviceId" class="form-control  input-medium inline">
-                                        <option value="">-- 选择绑定服务 --</option>
+                                <td class="bind-service">
+                                    <!--<select name="serviceId" class="form-control  input-medium inline">
+                                        <option value="">&#45;&#45; 选择绑定服务 &#45;&#45;</option>
                                     </select>
+                                    <select style="display:none;" name="leaseId" class="form-control  input-medium inline">
+                                        <option value="">&#45;&#45; 选择租赁服务 &#45;&#45;</option>
+                                    </select>-->
                                 </td>
                             </tr>
                             <tr>
                                 <th>服务次数</th>
-                                <td><input type="number" class="form-control " name="num" value=""></td>
+                                <td><input type="number" class="form-control " name="num" value="" min="0"></td>
                             </tr>
-                            <tr hidden>
+                            <tr style="display:none;">
                                 <th>状态</th>
-                                <td><input type="text" name="status" value="1"></td>
+                                <td><input type="text" name="status" value="0"></td>
                             </tr>
                             <tr>
                                 <th>截止日期</th>
@@ -54,7 +57,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
+                    <button class="btn dark green radius6" onclick="checkFormData('#modal-add')"><i class="fa fa-save"></i> 保存</button>
+                    <button type="submit" style="display:none;" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 保存</button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
                     </button>
@@ -87,19 +91,17 @@
                             </tr>
                             <tr>
                                 <th>绑定服务</th>
-                                <td>
-                                    <select name="serviceId" class="form-control  input-medium inline">
-                                        <option value="">-- 选择绑定服务 --</option>
-                                    </select>
+                                <td class="bind-service">
+
                                 </td>
                             </tr>
                             <tr>
                                 <th>服务次数</th>
-                                <td><input type="number" class="form-control " name="num" value=""></td>
+                                <td><input type="number" class="form-control " name="num" value="" min="0"></td>
                             </tr>
-                            <tr hidden>
+                            <tr style="display:none;">
                                 <th>状态</th>
-                                <td><input type="text" name="status"></td>
+                                <td><input type="text" name="status" value="0"></td>
                             </tr>
                             <tr>
                                 <th>截止日期</th>
@@ -119,7 +121,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
+                    <button onclick="checkFormData('#modal-edit')" class="btn dark green radius6"><i class="fa fa-check"></i> 保存
+                    </button>
+                    <button type="submit" style="display:none;" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存
                     </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i
                             class="fa fa-close"></i> 关闭
@@ -142,9 +146,12 @@
                 <option value="20">20</option>
                 <option value="50">50</option>
             </select>
-            <select name="serviceId" class=" input-medium form-control inline ">
-                <option value="">绑定服务</option>
+            <!--<select name="serviceId" class=" input-medium form-control inline ">
+                <option value="">&#45;&#45;绑定服务&#45;&#45;</option>
             </select>
+            <select name="leaseId" class=" input-medium form-control inline ">
+                <option value="">&#45;&#45;绑定租赁服务&#45;&#45;</option>
+            </select>-->
             <input type="text " name="cardNo" class="form-control input-small inline" placeholder="输入卡号查询"/>
             <button class="btn purple right search radius6"><i class="fa fa-search"></i> 查询</button>
             <button class='btn green radius6' data-toggle='modal' href='#modal-add'><i class="fa fa-plus"></i> 添加
@@ -172,13 +179,40 @@
         </tfoot>
     </table>
 </div>
+<script type="text/html" id="serviceId">
+    <select name="serviceId" class="form-control  input-medium inline">
+        {{if serviceId}}
+        <option value="{{serviceId}}">{{serviceId|getCurrentValueService}}</option>
+        {{else}}
+        <option value="">-- 选择绑定服务 --</option>
+        {{/if}}
+
+        {{each allServiceName}}
+        <option value="{{$value.id}}">{{$value.serviceName}}</option>
+        {{/each}}
+    </select>
+
+</script>
+<script type="text/html" id="leaseId">
+    <select  name="serviceId" class="form-control  input-medium inline">
+        {{if serviceId}}
+        <option value="{{leaseId}}">{{serviceId|getCurrentValueLease}}</option>
+        {{else}}
+        <option value="">-- 选择租赁服务 --</option>
+        {{/if}}
+
+    {{each allLeaseName}}
+    <option value="{{$value.id}}">{{$value.leaseName}}</option>
+    {{/each}}
+    </select>
+</script>
 <script type="text/javascript">
 
     var url = "/basic/card";
     let allUser;
     let allServiceName;
     let allCurrentData;
-
+    let allLeaseName;
     function init() {
         DataTable.init({
             url: url,//ajax请求url
@@ -189,7 +223,7 @@
                 {data: "cardNo"},
                 {data: "cardType",replaceFn:'cardTypeFormat'},
                 {data: "userId",replaceFn:'userIdTurnName'},
-                {data: "serviceId",replaceFn:'serviceIdTurnName'},
+                {data: "serviceId",replaceFn:serviceIdTurnName},
                 {data: "num", },
                 {data: "status", replaceFn:'statusTurnName'},
                 {data: "expiryDate",type:'date'}
@@ -201,6 +235,7 @@
                     color: "green",
                     option: "modal-edit",
                     edit: true,
+                    pre:editCard,
                     //editMain: true,
 //                    visible: false,
                     url: url,
@@ -237,11 +272,23 @@
         getAllUser(function(args){
             allUser=args
         });
+        getAllLeaseName(function(args){
+            allLeaseName=args;
+        })
         getAllServiceName(function(args){
             allServiceName=args
             init()
         })
         //loadTypes()
+
+        $('select[name=cardType]').change(function(e){
+            let sHtml;
+            switch($(this).val()){
+                case "1":sHtml=template('serviceId',{allServiceName}); $('.bind-service').empty().append(sHtml);break;
+                case "2":sHtml=template('leaseId',{allLeaseName}); $('.bind-service').empty().append(sHtml);break;
+                default :sHtml=template('serviceId',{allServiceName}); $('.bind-service').empty().append(sHtml);break;
+            }
+        })
     });
 
     //所有的用户
@@ -252,12 +299,23 @@
             }
         })
     }
+    //获取所有的租赁绑定的服务
+    function getAllLeaseName(callback){
+        Shinez.get('/lease/all',function(ret){
+            if(ret){
+                /*$.each(ret,function(k,v){
+                    $('select[name=leaseId]').append(`<option value="${v.id}">${v.leaseName}</option>`)
+                })*/
+                callback&&callback(ret)
+            }
+        })
+    }
     function getAllServiceName(callback){
         Shinez.get('/service/all',function(ret){
             if(ret){
-                $.each(ret,function(k,v){
+                /*$.each(ret,function(k,v){
                     $('select[name=serviceId]').append(`<option value="${v.id}">${v.serviceName}</option>`)
-                })
+                })*/
                 callback&&callback(ret)
             }
         })
@@ -289,32 +347,43 @@
         }
     }
     //绑定服务名次
-    function serviceIdTurnName(val){
+    function serviceIdTurnName(val,data){
+
+
         if(val=='-'||val==''){
             return '-'
         }else{
-            //console.log(allServiceName)
-            let ret=allServiceName.find((item,index)=>{
-                return item.id==val
-            })
-            return ret.serviceName
+            if(data.cardType==1){
+                let ret=allServiceName.find((item,index)=>{
+                    return item.id==val
+                })
+                if(ret){
+                    return ret.serviceName
+                }else{
+                    return '-'
+                }
+            }else if(data.cardType==2){
+                let ret=allLeaseName.find((item,index)=>{
+                    return item.id==val
+                })
+                if(ret){
+                    return ret.leaseName
+                }else{
+                    return '-'
+                }
+
+            }
+
         }
     }
     //状态值转换
     function statusTurnName(val){
         switch(val.toString()){
+            case '': return '<button onclick="changeStatusValue1(event,0)" class="btn btn-default btn-sm radius6" style="background-color:#dedede;">未使用</button>';
             case '0': return '<button onclick="changeStatusValue1(event,0)" class="btn btn-default btn-sm radius6" style="background-color:#dedede;">未使用</button>';
             case '1': return `<div class="dropdown">
-<button data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm radius6">已使用</button>
- <ul class="dropdown-menu" role="menu">
-        <li role="presentation">
-            <a onclick="changeStatusValue2(event,0)" role="menuitem" tabindex="-1">未使用</a>
-        </li>
-        <li role="presentation">
-            <a onclick="changeStatusValue2(event,2)" role="menuitem" tabindex="-1">已作废</a>
-        </li>
-        </li>
-    </ul>
+<button data-toggle="dropdown" class="btn btn-primary btn-sm radius6">已使用</button>
+
 </div>`;
             case '2': return '<button onclick="changeStatusValue1(event,2)" class="btn btn-danger btn-sm radius6">已作废</button>';
             default:return '-'
@@ -391,6 +460,62 @@
         dates>10?dates:'0'+dates;
         date=year+'-'+month+'-'+dates
         return date
+    }
+
+    //检测表单内容
+    function checkFormData(sId){
+        let sCard=$(sId).find('select[name=cardType]').val()
+        let sServiceId=$(sId).find('select[name=serviceId]').val()
+        let sLeaseId=$(sId).find('select[name=sLeaseId]').val()
+        let sNum=$(sId).find('input[name=num]').val()
+        let sExpired=$(sId).find('input[name=expiryDate]').val()
+        if(sCard!=''&&(sServiceId!=''||sLeaseId!='') && sNum!='' && sExpired!=''){
+            $(sId).find('.btn-save').trigger('click')
+        }else{
+
+            Shinez.tip('error','有必填项为空值，请检查后重新提交')
+            return
+        }
+    }
+
+    //编辑
+    function editCard(args){
+        let {cardType,serviceId}=args
+        let sHtml;
+        if(cardType==1){
+            sHtml=template('serviceId',{allServiceName,serviceId})
+
+        }else if(cardType==2){
+            sHtml=template('leaseId',{allLeaseName,serviceId})
+        }
+        $('#modal-edit').find('.bind-service').empty().append(sHtml)
+    }
+
+    function getCurrentValueService(val){
+
+         let ret=allServiceName.find((item,index)=>{
+
+             return item.id==val
+         })
+        if(ret){
+            return ret.serviceName
+        }else{
+             return '-'
+        }
+
+    }
+    function getCurrentValueLease(val){
+
+        let ret=allLeaseName.find((item,index)=>{
+
+            return item.id==val
+        })
+        if(ret){
+            return ret.leaseName
+        }else{
+            return '-'
+        }
+
     }
 
 </script>

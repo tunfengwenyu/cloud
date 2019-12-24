@@ -428,7 +428,12 @@
     };
 
     function getInstitutionName(code) {
-        return $("select[name=institutionNo]").find("option[value="+code+"]").html();
+        let val=$("select[name=institutionNo]").find("option[value="+code+"]").html()
+        if(val){
+            return val
+        }else{
+            return '-'
+        }
     }
 
     function getIntrodution(id){

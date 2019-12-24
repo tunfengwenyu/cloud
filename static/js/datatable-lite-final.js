@@ -279,6 +279,7 @@ var DataTable = function () {
                                     }
                                 });
                             }else{
+
                                 Shinez.put(opt.url.replace("{id}", $(modal).find("#" + opt.option).find("[name=id]").val()), $(modal).find("#" + opt.option).find("form").serialize(), function (ret) {
                                     if (ret.code == 0) {
                                         flag = false;
@@ -610,6 +611,14 @@ var DataTable = function () {
     }
 
     var rowToModal = function (dataId, modalId, data) {
+
+        var objs=$('#'+modalId).find('*[name]');
+        $.each(objs,function(k,v){
+            if($(v).attr('type')!='checkbox'){
+                $(v).val('')
+            }
+
+        })
         $.each(data, function (k, v) {
             var $currentElement = $("#" + modalId).find("*[name=" + k + "]");
             if ($currentElement.is("img")) {
@@ -800,8 +809,8 @@ var DataTable = function () {
                                     }
 
                                 }
-                            });/*
-                            console.log($(modal).find("#" + v.modalId).find("form").serialize())*/
+                            });
+
                             Shinez.post(v.url, $(modal).find("#" + v.modalId).find("form").serialize(), function (ret) {
                                 if (ret.code == 0) {
                                     flag = true;
