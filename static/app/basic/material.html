@@ -282,38 +282,24 @@
             case '0':
                 return `
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm radius6 dropdown-toggle " data-toggle="dropdown" style="background-color:#dedede;">
+                        <button type="button" onclick="changeDeviceStatus(this,'2')" class="btn btn-default btn-sm radius6 " style="background-color:#dedede;">
                             未使用
                         </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="changeDeviceStatus(this,'1')">已使用</a></li>
-                            <li><a onclick="changeDeviceStatus(this,'2')">已报废</a></li>
-                        </ul>
                     </div>
                 `
                 break
             case '1':
                 return `
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary btn-sm radius6 dropdown-toggle"
-                                data-toggle="dropdown">
+                        <button type="button" onclick="changeDeviceStatus(this,'2')" class="btn btn-primary btn-sm radius6">
                             已使用
                         </button>
-                    </div>
                 `
                 break
             case '2':
                 return `
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-danger btn-sm radius6 dropdown-toggle"
-                                data-toggle="dropdown">
+                        <button type="button" onclick="changeDeviceStatus(this,'0')" class="btn btn-danger btn-sm radius6">
                             已报废
                         </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="changeDeviceStatus(this,'1')">已使用</a></li>
-                            <li><a onclick="changeDeviceStatus(this,'0')">未使用</a></li>
-                        </ul>
-                    </div>
                 `
                 break
             default:
@@ -329,14 +315,13 @@
                 return item.id == id;
             })
 
-            if(val=='2'){
+            /*if(val=='2'){
                 let result=window.confirm('确定需要停用当前的耗材吗？')
                 if(!result){
                     return
                 }
-            }
-            ret.materialStatus=Number(val)||''
-
+            }*/
+            ret.materialStatus=Number(val)
             saveChangeStatusValue(ret)
 
         }

@@ -810,7 +810,7 @@ var DataTable = function () {
 
                                 }
                             });
-
+                            //console.log($(modal).find("#" + v.modalId).find("form").serialize())
                             Shinez.post(v.url, $(modal).find("#" + v.modalId).find("form").serialize(), function (ret) {
                                 if (ret.code == 0) {
                                     flag = true;
