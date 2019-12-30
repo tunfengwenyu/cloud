@@ -108,6 +108,14 @@
             var domain = ret.data.domain;
             initEditor(token, domain);
         });
+
+        //判断是否是负数
+        $('input[type=number]').blur(function(){
+            if($(this).val()<0){
+                Shinez.tip('error','租赁数量的数值不能为负值')
+                $(this).val('')
+            }
+        })
     });
 
     function initEditor(token, domain) {

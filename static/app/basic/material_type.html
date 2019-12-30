@@ -22,10 +22,10 @@
                                 <td><input type="number" name="price" class="form-control inline" min="0.01"
                                            max="2000" step="0.1"></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <th>数量</th>
                                 <td><input type="number" name="num" class="form-control inline"></td>
-                            </tr>
+                            </tr>-->
                         </table>
                     </form>
                 </div>
@@ -65,10 +65,10 @@
                                 <td><input type="number" name="price" class="form-control inline" min="0.01"
                                            max="2000" step="0.1"></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <th>数量</th>
                                 <td><input type="number" name="num" class="form-control inline"></td>
-                            </tr>
+                            </tr>-->
                         </table>
                     </form>
                 </div>
@@ -109,7 +109,7 @@
             <th>类型名称</th>
             <th>识别码</th>
             <th>价格</th>
-            <th>数量</th>
+            <!--<th>数量</th>-->
         </tr>
         </thead>
         <tbody>
@@ -132,7 +132,7 @@
                 {data: "typeName"},
                 {data: "identCode"},
                 {data: "price"},
-                {data: "num"}
+                {data: "num",visible:false}
             ],
             options: [//操作区域(id)
                 {
@@ -159,6 +159,14 @@
                 ],
             }
         });
+
+        //判断是否是负数
+        $('input[type=number]').blur(function(){
+            if($(this).val()<0){
+                Shinez.tip('error','价格的数值不能为负值')
+                $(this).val('')
+            }
+        })
     });
 
     function goback() {

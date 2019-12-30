@@ -130,18 +130,18 @@ var DataTable = function () {
                     }
                 } else {
                     if (v.collect) {
-                        td.append("<span class='td-content'></span>")
-                        td.find("span")
-                            .css("word-break", " break-all")
+                        $(td).append("<span class='td-content' style='max-width:250px;'></span>")
+
+                        $(td).find("span").css("word-break", " break-all")
                             .css("display", "-webkit-box")
                             .css("-webkit-line-clamp", "" + (v.collect.line || 3))
                             .css("-webkit-box-orient", "vertical")
                             .css("overflow", "hidden")
                             .css("height", (v.collect.line || 3) * 20 + "px")
-                            .attr("title", "" + showValue);
-                        $(td).find("span").html("" + showValue);
+                            .attr("title", "" + showValue).html(showValue)
+                        //$(td).find("span").html("" + showValue);
                     } else {
-                        $(td).html("" + showValue);
+                        $(td).css({'max-width':'150px','word-wrap':'break-word'}).html( showValue);
                     }
                 }
 
@@ -611,7 +611,6 @@ var DataTable = function () {
     }
 
     var rowToModal = function (dataId, modalId, data) {
-
         var objs=$('#'+modalId).find('*[name]');
         $.each(objs,function(k,v){
             if($(v).attr('type')!='checkbox'){

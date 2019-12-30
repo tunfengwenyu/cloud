@@ -23,17 +23,12 @@
                             <tr>
                                 <th>绑定服务</th>
                                 <td class="bind-service">
-                                    <!--<select name="serviceId" class="form-control  input-medium inline">
-                                        <option value="">&#45;&#45; 选择绑定服务 &#45;&#45;</option>
-                                    </select>
-                                    <select style="display:none;" name="leaseId" class="form-control  input-medium inline">
-                                        <option value="">&#45;&#45; 选择租赁服务 &#45;&#45;</option>
-                                    </select>-->
+
                                 </td>
                             </tr>
                             <tr>
                                 <th>服务次数</th>
-                                <td><input type="number" class="form-control " name="num" value="" min="0"></td>
+                                <td><input type="number" class="form-control " name="num" value="" min="1"></td>
                             </tr>
                             <tr style="display:none;">
                                 <th>状态</th>
@@ -44,7 +39,7 @@
                                 <td>
                                     <div class="input-group date  form_datetime " style="float: left">
                                         <input type="text" size="16" style="height: 35px" name="expiryDate"
-                                               class="form-control input-small inline"/>
+                                               class="inputtime form-control input-small inline"/>
                                         <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
                                             <i class="fa fa-calendar"></i>
@@ -97,7 +92,7 @@
                             </tr>
                             <tr>
                                 <th>服务次数</th>
-                                <td><input type="number" class="form-control " name="num" value="" min="0"></td>
+                                <td><input type="number" class="form-control " name="num" value="" min="1"></td>
                             </tr>
                             <tr style="display:none;">
                                 <th>状态</th>
@@ -108,7 +103,7 @@
                                 <td>
                                     <div class="input-group date  form_datetime " style="float: left">
                                         <input type="text" size="16" style="height: 35px" name="expiryDate"
-                                               class="form-control input-small inline"/>
+                                               class="inputtime form-control input-small inline"/>
                                         <span class="input-group-btn">
                                         <button class="btn default date-set" type="button">
                                             <i class="fa fa-calendar"></i>
@@ -287,6 +282,14 @@
                 case "1":sHtml=template('serviceId',{allServiceName}); $('.bind-service').empty().append(sHtml);break;
                 case "2":sHtml=template('leaseId',{allLeaseName}); $('.bind-service').empty().append(sHtml);break;
                 default :sHtml=template('serviceId',{allServiceName}); $('.bind-service').empty().append(sHtml);break;
+            }
+        })
+
+        //判断是否是负数
+        $('input[type=number]').blur(function(){
+            if(/^[1-9]+$/.test($(this).val())!=true){
+                Shinez.tip('error','服务次数的数值不能为负值且最小值为1')
+                $(this).val('')
             }
         })
     });

@@ -15,7 +15,7 @@
                             </tr>
                             <tr>
                                 <th>排序</th>
-                                <td><input type="number" name="sort" class="form-control inline" min="0"  step="1"></td>
+                                <td><input type="number" name="sort" class="form-control inline" min="1"  step="1"></td>
                             </tr>
                         </table>
                     </form>
@@ -131,6 +131,14 @@
                 ],
             }
         });
+
+        //判断是否是负数
+        $('input[type=number]').blur(function(){
+            if(/^[0-9]+$/.test($(this).val())!=true){
+                Shinez.tip('error','排序的数值不能为负值')
+                $(this).val('')
+            }
+        })
     });
 
     function goback(){

@@ -157,6 +157,14 @@
             }
         });
 
+        //判断是否是负数
+        $('input[type=number]').blur(function(){
+            if(/^[1-9]+$/.test($(this).val())!=true){
+                Shinez.tip('error','次数的数值不能为负值且最小值为1')
+                $(this).val('')
+            }
+        })
+
         loadServiceTypes();
     });
 

@@ -143,10 +143,10 @@
             <th>所属类型</th>
             <th>收费编码</th>
             <th>服务定价</th>
-            <th>适应症</th>
-            <th>禁忌症</th>
-            <th>治疗师提成比例</th>
-	    <th>购买服务赠送积分</th>
+            <th style="max-width: 100px;">适应症</th>
+            <th style="max-width: 100px;">禁忌症</th>
+            <!--<th>治疗师提成比例</th>
+	    <th>购买服务赠送积分</th>-->
             <!--<th>指定站点</th>-->
             <!--<th>关联设备</th>-->
         </tr>
@@ -188,8 +188,8 @@
                         line: 2
                     },
                 },
-                {data: "therapistRate"},
-                {data: "giftPoints"},
+                {data: "therapistRate",visible:false},
+                {data: "giftPoints",visible:false},
                 // {data: "stationNo",visible:false},
                 // {data: "stationName"},
                 // {data: "id",replaceFn: "getType"}
