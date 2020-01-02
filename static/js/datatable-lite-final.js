@@ -279,8 +279,6 @@ var DataTable = function () {
                                     }
                                 });
                             }else{
-                                var ssss=$(modal).find("#" + opt.option).find("form").serialize()
-                                console.log('aaaa',decodeURI(ssss))
                                 Shinez.put(opt.url.replace("{id}", $(modal).find("#" + opt.option).find("[name=id]").val()), $(modal).find("#" + opt.option).find("form").serialize(), function (ret) {
                                     if (ret.code == 0) {
                                         flag = false;
