@@ -63,19 +63,13 @@
                             <tr>
                                 <th>管理权限</th>
                                 <td colspan="3">
-                                    <input type="checkbox" name="isEnabled" data-size='small' value="1" />
-                                    <!--<label> <input type="radio" name="showStatus" value="false"/>开启 </label>-->
-                                    <!--<label><input type="radio" name="showStatus" value="true"/> 停用 </label>-->
-                                    <!--<input type="hidden" name="isBan" data-ref="showStatus" value=""/>-->
+                                    <input type="checkbox" name="isEnabled" data-size='small' value="1" data-on-text="启用" data-off-text="禁用" checked/>
                                 </td>
                             </tr>
                             <tr>
                                 <th>数据权限：</th>
                                 <td colspan="3">
-                                    <input type="checkbox" name="enableDataRole" data-size='small' value="1" />
-                                    <!--<label><input type="radio" value="1" name="showEnableDataRole"/>开启</label>-->
-                                    <!--<label><input type="radio" value="0" checked name="showEnableDataRole"/>默认</label>-->
-                                    <!--<input type="hidden" name="enableDataRole" data-ref="showEnableDataRole" value="0"/>-->
+                                    <input type="checkbox" name="enableDataRole" data-size='small' value="1" data-on-text="启用" data-off-text="禁用" checked/>
                                 </td>
                             </tr>
                         </table>
@@ -136,7 +130,7 @@
                                     <!--<label> <input type="radio" name="showStatus" value="0"/>开启 </label>-->
                                     <!--<label><input type="radio" name="showStatus" value="1"/> 停用 </label>-->
                                     <!--<input type="hidden" name="isBan" data-ref="showStatus" value=""/>-->
-                                    <input type="checkbox" name="isEnabled" data-size='small' value="1" />
+                                    <input type="checkbox" name="isEnabled" data-size='small' value="1" data-on-text="启用" data-off-text="禁用" checked/>
                                 </td>
                             </tr>
                             <tr>
@@ -145,7 +139,7 @@
                                     <!--<label><input type="radio" value="1" name="showEnableDataRole"/>开启</label>-->
                                     <!--<label><input type="radio" value="0" checked name="showEnableDataRole"/>默认</label>-->
                                     <!--<input type="hidden" name="enableDataRole" data-ref="showEnableDataRole" value=""/>-->
-                                    <input type="checkbox" name="enableDataRole" data-size='small' value="1" />
+                                    <input type="checkbox" name="enableDataRole" data-size='small' value="1" data-on-text="启用" data-off-text="禁用" checked/>
                                 </td>
                             </tr>
                         </table>
@@ -277,8 +271,8 @@
                 },
                 {
                     data: "isEnabled",
-                    convert: "1=> <input type='checkbox' class='ban-status-sw' data-size='small' checked >" +
-                        "|0=><input class='ban-status-sw'   type='checkbox' data-size='small'>"
+                    convert: "1=> <input type='checkbox' class='ban-status-sw' data-size='small' checked data-on-text='启用' data-off-text='禁用'>" +
+                        "|0=><input class='ban-status-sw'  type='checkbox' data-size='small' data-on-text='启用' data-off-text='禁用'>"
                 },
             ],
             options: [ //操作区域(id)
@@ -375,7 +369,7 @@
                 });
                 columnVal += "</select>";
                 $("#modal-add,#modal-edit").find("table").append("<tr data-code='BY_station_no' class='tr-role-config' style='display: none'>" +
-                    "<td><input type='hidden' name='dataRoles[0].dataRoleCode' value='BY_station_no'>按站点</td>" +
+                    "<td><input class='inputtime' type='hidden' name='dataRoles[0].dataRoleCode' value='BY_station_no'>按站点</td>" +
                     //                "<td>"+v.tableName+"</td>" +
                     //                "<td>"+v.columnName+"</td>" +
                     "<td>" + columnVal + "</td></tr>");
@@ -389,6 +383,7 @@
         $("tr[data-code]").find("*[name*=columnValue]").val("").change();
         var dataRoleStatus = $("tr[data-id=" + obj + "]").find("td[data-name=enableDataRole]").attr("data-value");
         $(".tr-role-config").find("*[name*=columnValue]").val("");
+        $(".tr-role-config").find("*[name*=dataRoleCode]").val("BY_station_no");
         if (dataRoleStatus == "true" || dataRoleStatus == true || dataRoleStatus == "1" || dataRoleStatus == 1) { //如果有数据权限
             Shinez.get("/main/sys-user/" + obj + "/data-role", function (ret) {
                 if (ret.code == 0) {
@@ -404,7 +399,7 @@
         }
     }
 
-    function registerSwitch() {
+    function registerSwitch(val) {
         $('.ban-status-sw').on('switchChange.bootstrapSwitch', function (e, state) {
             var $this = $(this);
             $this.bootstrapSwitch('state', !state, true);

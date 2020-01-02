@@ -14,14 +14,14 @@
                                 <th >选择类型</th>
                                 <td >
                                     <select class="form-control  input-medium inline" name="serviceType" onchange="loadService(this.value);">
-                                        <option>-- 请选择 --</option>
+                                        <option value="">-- 请选择 --</option>
                                     </select>
                                 </td>
                             <tr>
                             <th>选择服务</th>
                                 <td>
                                     <select class="form-control  input-medium inline" name="serviceNo">
-                                        <option>-- 请选择 --</option>
+                                        <option value="">-- 请选择 --</option>
                                     </select>
                                 </td>
                             </tr>
@@ -34,7 +34,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 添加</button>
+                    <button class="btn dark green save-btn radius6" onclick="checkAddFormData('add')"><i class="fa fa-check"></i> 保存  </button>
+                    <button type="submit" style="display:none;" class="btn dark green btn-save radius6"><i class="fa fa-save"></i> 添加</button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i  class="fa fa-close"></i> 关闭 </button>
                 </div>
             </div>
@@ -75,7 +76,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存  </button>
+                    <button class="btn dark green save-btn radius6"><i class="fa fa-check"></i> 保存  </button>
+                    <button type="submit" style="display:none;" class="btn dark green btn-save radius6"><i class="fa fa-check"></i> 保存  </button>
                     <button type="button" class="btn dark btn-outline radius6" data-dismiss="modal"><i  class="fa fa-close"></i> 关闭 </button>
                 </div>
             </div>
@@ -154,7 +156,7 @@
                 insert: [
                     {url: url, modalId: "modal-add"},
                 ],
-            }
+            },
         });
 
         //判断是否是负数
@@ -164,6 +166,8 @@
                 $(this).val('')
             }
         })
+
+
 
         loadServiceTypes();
     });
@@ -178,17 +182,37 @@
     }
 
     function loadService(id) {
-        Shinez.get("/service/all", {serviceTypeId:id}, function (ret) {
-            $("select[name=serviceNo]").empty();
-            $("select[name=serviceNo]").append("<option>-- 请选择 --</option>");
-            $.each(ret, function (k, v) {
-                $("select[name=serviceNo]").append("<option value=" + v.serviceNo + ">" + v.serviceName + "</option>");
-            });
-        })
+        if(id!=''){
+            Shinez.get("/service/all", {serviceTypeId:id}, function (ret) {
+                $("select[name=serviceNo]").empty();
+                $("select[name=serviceNo]").append("<option value=''>-- 请选择 --</option>");
+                $.each(ret, function (k, v) {
+                    $("select[name=serviceNo]").append("<option value=" + v.serviceNo + ">" + v.serviceName + "</option>");
+                });
+            })
+        }
+
     }
 
     function goback(){
         loadHtml("/basic/scheme");
+    }
+    //保存的验证
+    function checkAddFormData(str){
+        var sIdName;
+        switch(str){
+            case "add":
+                sIdName="#modal-add"
+                break;
+        }
+        let ret=$(sIdName).find('select[name=serviceNo]').val();
+        let ret2=$(sIdName).find('select[name=serviceType]').val();
+        let ret3=$(sIdName).find('input[name=num]').val();
+        if(ret!=''&&ret2!=''&&ret3!=''){
+            $('.btn-save').trigger('click')
+        }else{
+            Shinez.tip('error','表单中的控件为必填项，不能为空，请检查后提交保存')
+        }
     }
 
 </script>
