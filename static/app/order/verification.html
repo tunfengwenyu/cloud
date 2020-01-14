@@ -307,6 +307,10 @@
         <th>治疗时间:</th>
         <td><input type="text" readonly class="form-control" value="{{cureTime}}"/></td>
     </tr>
+    <tr>
+        <th>强度:</th>
+        <td><input type="text" readonly class="form-control" value="{{strength}}"/></td>
+    </tr>
 
 </script>
 <script type="text/html" id="SWFK">
@@ -520,17 +524,26 @@
         var oCurItem=aList.filter(function(item,index){
             return item.id==iCurId
         });
+        var ids=oCurItem[0].cureParamId
         var identCode=oCurItem[0].identCode
-        Shinez.get('/order/cureParam?id='+iCurId,function(ret){
-            if(ret.code!=0){
-                var errorMsg={error:`没有获取到当前患者治疗数据`}
-                var sHtml=template('dismatched',errorMsg)
-                $('.device-name').empty().append(sHtml)
-            }else{
-                var cureParam=ret.data.cureParam
-                getTemplateInfo(identCode,cureParam)
-            }
-        })
+        if(ids){
+            Shinez.get('/order/cureParam?id='+ids,function(ret){
+                if(ret.code!=0){
+                    var errorMsg={error:`没有获取到当前患者治疗数据`}
+                    var sHtml=template('dismatched',errorMsg)
+                    $('.device-name').empty().append(sHtml)
+                }else{
+                    var cureParam=ret.data.cureParam
+                    getTemplateInfo(identCode,cureParam)
+                }
+            })
+        }else{
+            var errorMsg={error:`字段cureParamId不存在，无法获取当前治疗参数`}
+            var sHtml=template('dismatched',errorMsg)
+            $('.device-name').empty().append(sHtml)
+        }
+
+
     }
 
     function getTemplateInfo(sName,objs){
@@ -584,6 +597,10 @@
                 $('.device-name').empty().append(sHtml)
             }
             if(sName.includes('SMY')){
+                var sHtml=template('SMY',objs)
+                $('.device-name').empty().append(sHtml)
+            }
+            if(sName.includes('SMZL')){
                 var sHtml=template('SMY',objs)
                 $('.device-name').empty().append(sHtml)
             }
