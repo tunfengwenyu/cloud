@@ -266,7 +266,14 @@ var DataTable = function () {
                         var flag = true;
                         if (validresult && flag) {
                             if(method){
-                                Shinez.post(opt.url.replace("{id}", $(modal).find("#" + opt.option).find("[name=id]").val()), $(modal).find("#" + opt.option).find("form").serialize(), function (ret) {
+                                var items=$(modal).find("#" + opt.option).find("form").serialize()
+                                if($(modal).find('#'+opt.option).find('input[type=checkbox]').length>0){
+                                    var sname=$(modal).find('#'+opt.option).find('input[type=checkbox]')[0].name;
+                                    var snameValue=$(modal).find('#'+opt.option).find(`input[name=${sname}]`).bootstrapSwitch('state');
+                                    items+=`&${sname}=${snameValue}`
+                                }
+                                //console.log('ttttt',items)
+                                Shinez.post(opt.url.replace("{id}", $(modal).find("#" + opt.option).find("[name=id]").val()), items, function (ret) {
                                     if (ret.code == 0) {
                                         flag = false;
                                         $(".modal").modal('hide');
@@ -279,6 +286,7 @@ var DataTable = function () {
                                     }
                                 });
                             }else{
+
                                 Shinez.put(opt.url.replace("{id}", $(modal).find("#" + opt.option).find("[name=id]").val()), $(modal).find("#" + opt.option).find("form").serialize(), function (ret) {
                                     if (ret.code == 0) {
                                         flag = false;
@@ -808,7 +816,7 @@ var DataTable = function () {
 
                                 }
                             });
-                            //console.log($(modal).find("#" + v.modalId).find("form").serialize())
+                            /*console.log($(modal).find("#" + v.modalId).find("form").serialize())*/
                             Shinez.post(v.url, $(modal).find("#" + v.modalId).find("form").serialize(), function (ret) {
                                 if (ret.code == 0) {
                                     flag = true;

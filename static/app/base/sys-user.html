@@ -400,6 +400,7 @@
     }
 
     function registerSwitch(val) {
+        console.log('ssssss',val)
         $('.ban-status-sw').on('switchChange.bootstrapSwitch', function (e, state) {
             var $this = $(this);
             $this.bootstrapSwitch('state', !state, true);

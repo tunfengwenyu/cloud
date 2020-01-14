@@ -334,6 +334,7 @@
             param+=key+'='+val+'&'
         }
         Shinez.put(`${url}?${param}`,function(ret){
+
             if(ret.code==0){
                 $('.search').trigger('click');
             }else{

@@ -7,7 +7,7 @@
                     <h4 class="modal-title">绑定租赁设备</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="javascript:;" method="put">
+                    <form action="javascript:;" method="post">
                         <input type="hidden" name="id" value=""/>
                         <table class="table table-striped table-bordered " width="100%">
                             <tr>
@@ -17,6 +17,7 @@
                                         <option value="">--请选择绑定设备名--</option>
                                     </select>
                                 </td>
+
                             </tr>
                             <tr>
                                 <th>用户购买天数</th>
@@ -171,6 +172,12 @@
         loadStation();
         loadOrders();
 
+        $('input[name=isReturn]').bootstrapSwitch({
+            onSwitchChange(e,state){
+                $('input[name=isReturn]').val(state)
+            }
+        })
+
     });
 
 
@@ -263,7 +270,7 @@
                     //editMain: true,
                     pre:editLease,
                     method:'post',
-                    props: ["data-roles=ROLE_SUPER"]
+                    //props: ["data-roles=ROLE_SUPER"]
                 },
                 {
                     icon: 'fa fa-remove',
@@ -290,14 +297,18 @@
                 Shinez.get('/lease/station-device-type?id='+ids,function(dat){
                     var aDivice=dat.data.jSONArray
                     var result=aDivice.filter(function(item,index){
-                        if(item.stationName==stationName){
-                            return item
-                        }
+                        return item.stationName==stationName
                     });
+                    var ret=[];
                     $.each(result[0].childrenList,function(k,v){
                         if(v.checked){
-                            $("select[name=deviceName]").append("<option class='opt-station' value='" + v.stationName + "'>" + v.stationName + "</option>")
+                            if(ret.includes(v.stationName)==false){
+                                ret.push(v.stationName)
+                            }
                         }
+                    })
+                    ret.forEach((item,index)=>{
+                        $("select[name=deviceName]").append("<option class='opt-station' value='" + item+ "'>" + item + "</option>")
                     })
                 })
             }else{
