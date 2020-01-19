@@ -90,7 +90,7 @@
                                         </span>
                 </div>
             </div>
-            <select name="leaseName" class="form-control input-small inline ">
+            <select name="leaseNo" class="form-control input-small inline ">
                 <option value="">-- 选择租赁服务 --</option>
             </select>
             <select name="stationNo" class=" input-small form-control inline ">
@@ -195,7 +195,7 @@
         Shinez.get(leasePage.lease, function (ret) {
             $(".opt-service").remove();
             $.each(ret, function (k, v) {
-                $("select[name=leaseName]").append("<option  class='opt-station' value='" + v.leaseName + "'>" + v.leaseName + "</option>")
+                $("select[name=leaseNo]").append("<option  class='opt-service' value='" + v.leaseNo + "'>" + v.leaseName + "</option>")
             });
         })
     }

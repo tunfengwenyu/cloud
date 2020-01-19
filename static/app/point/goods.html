@@ -80,10 +80,10 @@
 
     function isSale(isSale){
         if(!isSale || isSale=="false"){
-            return "<input class='ck-sw'   type='checkbox' data-size='small'>"
+            return "<input class='ck-sw'   type='checkbox' data-size='small' data-on-text='启用' data-off-text='禁用'>"
         }
         if(isSale || isSale=="true"){
-            return "<input type='checkbox' class='ck-sw' data-size='small' checked >"
+            return "<input type='checkbox' class='ck-sw' data-size='small' data-on-text='启用' data-off-text='禁用' checked >"
         }
     }
 

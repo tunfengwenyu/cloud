@@ -385,6 +385,7 @@
         $(".tr-role-config").find("*[name*=columnValue]").val("");
         $(".tr-role-config").find("*[name*=dataRoleCode]").val("BY_station_no");
         if (dataRoleStatus == "true" || dataRoleStatus == true || dataRoleStatus == "1" || dataRoleStatus == 1) { //如果有数据权限
+            $(".tr-role-config").css("display", "");
             Shinez.get("/main/sys-user/" + obj + "/data-role", function (ret) {
                 if (ret.code == 0) {
                     var role = ret.data.arrayList;
@@ -400,7 +401,6 @@
     }
 
     function registerSwitch(val) {
-        console.log('ssssss',val)
         $('.ban-status-sw').on('switchChange.bootstrapSwitch', function (e, state) {
             var $this = $(this);
             $this.bootstrapSwitch('state', !state, true);

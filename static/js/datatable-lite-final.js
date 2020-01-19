@@ -342,7 +342,6 @@ var DataTable = function () {
 
         Shinez.get(url, $(params).serialize(),
             function (ret) {
-                
                 if (ret.code) {
                     Shinez.tip("error", "数据加载失败：" + ret.msg);
                     $(".loading-tip").html("数据加载失败：" + ret.msg).css("color", "red");
