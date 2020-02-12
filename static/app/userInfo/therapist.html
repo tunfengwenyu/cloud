@@ -104,10 +104,18 @@
 
     $(function () {
         init();
+        let {pageIndex=1,pageSize=10}=history.state.query||{};
+        $('.search').attr('data-index',pageIndex)
+        $('select[name="pageSize"]').val(pageSize)
+        $('.search').trigger('click')
     });
 
     function editTherapist(id) {
         history.state.params=id;
+        history.state.query={
+            pageIndex:$('.search').attr('data-index')||1,
+            pageSize:$('select[name="pageSize"]').val(),
+        }
         loadHtml("/userInfo/therapist_edit");
     }
 
